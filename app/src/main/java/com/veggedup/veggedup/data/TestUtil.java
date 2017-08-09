@@ -18,10 +18,10 @@ public class TestUtil {
 
         ContentValues cv = new ContentValues();
         cv.put(VeggedupContract.Recipe.COLUMN_RECIPE_ID, 1);
-        cv.put(VeggedupContract.Recipe.COLUMN_TITLE, "Recipe 1");
+        cv.put(VeggedupContract.Recipe.COLUMN_TITLE, "Mexican Chilli");
         cv.put(VeggedupContract.Recipe.COLUMN_IMAGE, "https://veggedup.com/img/test1.jpg");
         cv.put(VeggedupContract.Recipe.COLUMN_DURATION, "1hr 15m");
-        cv.put(VeggedupContract.Recipe.COLUMN_TYPE, "Type 1");
+        cv.put(VeggedupContract.Recipe.COLUMN_TYPE, "Main");
         cv.put(VeggedupContract.Recipe.COLUMN_DESCRIPTION, "Description 1");
         cv.put(VeggedupContract.Recipe.COLUMN_SERVERS, 2);
         cv.put(VeggedupContract.Recipe.COLUMN_INGREDIENTS_COUNT, 2);
@@ -45,10 +45,10 @@ public class TestUtil {
 
         cv = new ContentValues();
         cv.put(VeggedupContract.Recipe.COLUMN_RECIPE_ID, 2);
-        cv.put(VeggedupContract.Recipe.COLUMN_TITLE, "Recipe 2");
+        cv.put(VeggedupContract.Recipe.COLUMN_TITLE, "Coconut Ice Cream");
         cv.put(VeggedupContract.Recipe.COLUMN_IMAGE, "https://veggedup.com/img/test2.jpg");
         cv.put(VeggedupContract.Recipe.COLUMN_DURATION, "1hr 15m");
-        cv.put(VeggedupContract.Recipe.COLUMN_TYPE, "Type 1");
+        cv.put(VeggedupContract.Recipe.COLUMN_TYPE, "Dessert");
         cv.put(VeggedupContract.Recipe.COLUMN_DESCRIPTION, "Description 1");
         cv.put(VeggedupContract.Recipe.COLUMN_SERVERS, 2);
         cv.put(VeggedupContract.Recipe.COLUMN_INGREDIENTS_COUNT, 2);

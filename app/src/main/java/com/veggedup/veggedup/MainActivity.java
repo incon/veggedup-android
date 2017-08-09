@@ -5,8 +5,10 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -37,8 +39,13 @@ public class MainActivity extends AppCompatActivity {
         // Set local attributes to corresponding views
         recipeRecyclerView = (RecyclerView) this.findViewById(R.id.recipe_list_view);
 
+        // Best amount of columns based off the screen size
+        DisplayMetrics displayMetrics = this.getResources().getDisplayMetrics();
+        float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
+        int columns = (int) Math.ceil(dpWidth / 540);
+
         // Set layout for the RecyclerView, because it's a list we are using the linear layout
-        recipeRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recipeRecyclerView.setLayoutManager(new GridLayoutManager(this, columns));
 
         // Create a DB helper (this will create the DB if run for the first time)
         VeggedupDbHelper dbHelper = new VeggedupDbHelper(this);

@@ -43,11 +43,15 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Re
         // Update the view holder with the information needed to display
         String name = mCursor.getString(mCursor.getColumnIndex(VeggedupContract.Recipe.COLUMN_TITLE));
 
+        String type = mCursor.getString(mCursor.getColumnIndex(VeggedupContract.Recipe.COLUMN_TYPE));
+
         // Retrieve the id from the cursor and
         long id = mCursor.getLong(mCursor.getColumnIndex(VeggedupContract.Recipe._ID));
 
         // Display the recipe title
         holder.titleTextView.setText(name);
+
+        holder.typeTextView.setText(type);
 
         // Set the tag of the itemview in the holder to the id
         holder.itemView.setTag(id);
@@ -81,6 +85,7 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Re
 
         // Will display the recipe title
         TextView titleTextView;
+        TextView typeTextView;
 
         /**
          * Constructor for our ViewHolder. Within this constructor, we get a reference to our
@@ -92,6 +97,7 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Re
         public RecipeViewHolder(View itemView) {
             super(itemView);
             titleTextView = (TextView) itemView.findViewById(R.id.title_text_view);
+            typeTextView = (TextView) itemView.findViewById(R.id.type_text_view);
         }
 
     }
