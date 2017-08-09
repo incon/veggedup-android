@@ -1,17 +1,15 @@
 package com.veggedup.veggedup;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.View;
-import android.widget.EditText;
 
 import com.veggedup.veggedup.data.TestUtil;
 import com.veggedup.veggedup.data.VeggedupContract;
@@ -23,7 +21,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements RecipeListAdapter.RecipeListAdapterOnClickHandler {
 
     private RecipeListAdapter mAdapter;
     private SQLiteDatabase mDb;
@@ -61,10 +59,17 @@ public class MainActivity extends AppCompatActivity {
         Cursor cursor = getAllRecipes();
 
         // Create an adapter for that cursor to display the data
-        mAdapter = new RecipeListAdapter(this, cursor);
+        mAdapter = new RecipeListAdapter(this, cursor, this);
 
         // Link the adapter to the RecyclerView
         recipeRecyclerView.setAdapter(mAdapter);
+    }
+
+    @Override
+    public void onClick(int recipeId) {
+        Intent recipeDetailIntent = new Intent(MainActivity.this, RecipeDetailActivity.class);
+        recipeDetailIntent.putExtra("RECIPE_ID", recipeId);
+        startActivity(recipeDetailIntent);
     }
 
     public class TestOkHttpTask extends AsyncTask<String, Void, String> {

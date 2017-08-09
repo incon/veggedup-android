@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Veggedup</string>
     <string name="default_recipe_title">[Recipe Title]</string>
+    <string name="title_activity_recipe_detail">Recipe Detail</string>
 </resources>

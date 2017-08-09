@@ -16,13 +16,24 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Re
     private Cursor mCursor;
     private Context mContext;
 
+
+    final private RecipeListAdapterOnClickHandler mClickHandler;
+
+    /**
+     * The interface that receives onClick messages.
+     */
+    public interface RecipeListAdapterOnClickHandler {
+        void onClick(int recipeId);
+    }
+
     /**
      * Constructor using the context and the db cursor
      * @param context the calling context/activity
      * @param cursor the db cursor with recipe data to display
      */
-    public RecipeListAdapter(Context context, Cursor cursor) {
+    public RecipeListAdapter(Context context, Cursor cursor, RecipeListAdapterOnClickHandler clickHandler) {
         this.mContext = context;
+        this.mClickHandler = clickHandler;
         this.mCursor = cursor;
     }
 
@@ -81,7 +92,7 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Re
     /**
      * Inner class to hold the views needed to display a single item in the recycler-view
      */
-    class RecipeViewHolder extends RecyclerView.ViewHolder {
+    class RecipeViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         // Will display the recipe title
         TextView titleTextView;
@@ -98,7 +109,23 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Re
             super(itemView);
             titleTextView = (TextView) itemView.findViewById(R.id.title_text_view);
             typeTextView = (TextView) itemView.findViewById(R.id.type_text_view);
+
+            itemView.setOnClickListener(this);
         }
 
+        /**
+         * This gets called by the child views during a click. We fetch the date that has been
+         * selected, and then call the onClick handler registered with this adapter, passing that
+         * date.
+         *
+         * @param v the View that was clicked
+         */
+        @Override
+        public void onClick(View v) {
+            int adapterPosition = getAdapterPosition();
+            mCursor.moveToPosition(adapterPosition);
+            int recipeId = mCursor.getInt(mCursor.getColumnIndex(VeggedupContract.Recipe.COLUMN_RECIPE_ID));
+            mClickHandler.onClick(recipeId);
+        }
     }
 }
