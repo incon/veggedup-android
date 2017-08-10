@@ -11,6 +11,8 @@ import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.veggedup.veggedup.data.TestUtil;
 import com.veggedup.veggedup.data.VeggedupContract;
@@ -25,6 +27,7 @@ import okhttp3.Response;
 public class MainActivity extends AppCompatActivity implements RecipeListAdapter.RecipeListAdapterOnClickHandler {
 
     private FirebaseAnalytics mFirebaseAnalytics;
+    private AdView mAdView;
 
     private RecipeListAdapter mAdapter;
     private SQLiteDatabase mDb;
@@ -37,6 +40,11 @@ public class MainActivity extends AppCompatActivity implements RecipeListAdapter
 
         // Firebase Analytics
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+
+        // Ads
+        mAdView = (AdView) findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
 
         RecyclerView recipeRecyclerView;
 
