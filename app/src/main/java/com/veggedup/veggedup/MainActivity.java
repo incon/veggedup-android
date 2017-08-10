@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.veggedup.veggedup.data.TestUtil;
 import com.veggedup.veggedup.data.VeggedupContract;
 import com.veggedup.veggedup.data.VeggedupDbHelper;
@@ -23,6 +24,8 @@ import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity implements RecipeListAdapter.RecipeListAdapterOnClickHandler {
 
+    private FirebaseAnalytics mFirebaseAnalytics;
+
     private RecipeListAdapter mAdapter;
     private SQLiteDatabase mDb;
     private final static String LOG_TAG = MainActivity.class.getSimpleName();
@@ -31,6 +34,9 @@ public class MainActivity extends AppCompatActivity implements RecipeListAdapter
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Firebase Analytics
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         RecyclerView recipeRecyclerView;
 
@@ -67,6 +73,11 @@ public class MainActivity extends AppCompatActivity implements RecipeListAdapter
 
     @Override
     public void onClick(int recipeId) {
+        Bundle bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, String.valueOf(recipeId));
+        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "recipe");
+        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
+
         Intent recipeDetailIntent = new Intent(MainActivity.this, RecipeDetailActivity.class);
         recipeDetailIntent.putExtra("RECIPE_ID", recipeId);
         startActivity(recipeDetailIntent);
