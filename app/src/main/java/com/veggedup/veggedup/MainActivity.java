@@ -19,6 +19,7 @@ import android.widget.ProgressBar;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.mediation.customevent.CustomEvent;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.veggedup.veggedup.data.DataUtil;
 import com.veggedup.veggedup.data.VeggedupContract;
@@ -26,7 +27,7 @@ import com.veggedup.veggedup.data.VeggedupDbHelper;
 
 
 public class MainActivity extends AppCompatActivity implements RecipeListAdapter.RecipeListAdapterOnClickHandler,
-        LoaderManager.LoaderCallbacks<String> {
+        LoaderManager.LoaderCallbacks<Cursor> {
 
     private FirebaseAnalytics mFirebaseAnalytics;
     private AdView mAdView;
@@ -114,39 +115,52 @@ public class MainActivity extends AppCompatActivity implements RecipeListAdapter
     }
 
     @Override
-    public Loader<String> onCreateLoader(int id, Bundle args) {
+    public Loader<Cursor> onCreateLoader(int id, final Bundle args) {
 
-        return new AsyncTaskLoader<String>(this) {
+        return new AsyncTaskLoader<Cursor>(this) {
+            Cursor mRecipeData = null;
+
             @Override
             protected void onStartLoading() {
                 /*
                  * When we initially begin loading in the background, we want to display the
                  * loading indicator to the user
                  */
-                mLoadingIndicator.setVisibility(View.VISIBLE);
-                forceLoad();
+                if (mRecipeData != null) {
+                    // Delivers any previously loaded data immediately
+                    deliverResult(mRecipeData);
+                } else {
+                    // Force a new load
+                    forceLoad();
+                }
             }
 
             @Override
-            public String loadInBackground() {
-                return String.valueOf(DataUtil.syncData(mDb));
+            public Cursor loadInBackground() {
+                mLoadingIndicator.setVisibility(View.VISIBLE);
+                DataUtil.syncData(mDb);
+                return getAllRecipes();
+            }
+
+            // deliverResult sends the result of the load, a Cursor, to the registered listener
+            public void deliverResult(Cursor recipeData) {
+                mRecipeData = recipeData;
+                super.deliverResult(recipeData);
             }
         };
     }
 
     @Override
-    public void onLoadFinished(Loader<String> loader, String data) {
+    public void onLoadFinished(Loader<Cursor> loader, Cursor recipeData) {
         /* When we finish loading, we want to hide the loading indicator from the user. */
         mLoadingIndicator.setVisibility(View.INVISIBLE);
 
         // Get all recipes from the database and save in a cursor
-        mAdapter.swapCursor(getAllRecipes());
-
-        Log.i("onLoadFinished", data);
+        mAdapter.swapCursor(recipeData);
     }
 
     @Override
-    public void onLoaderReset(Loader<String> loader) {
+    public void onLoaderReset(Loader<Cursor> loader) {
 
     }
 
