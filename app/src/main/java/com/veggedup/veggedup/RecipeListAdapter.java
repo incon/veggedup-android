@@ -6,8 +6,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.veggedup.veggedup.module.GlideApp;
 import com.veggedup.veggedup.data.VeggedupContract;
 
 public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.RecipeViewHolder> {
@@ -56,6 +58,8 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Re
 
         String type = mCursor.getString(mCursor.getColumnIndex(VeggedupContract.Recipe.COLUMN_TYPE));
 
+        String url = mCursor.getString(mCursor.getColumnIndex(VeggedupContract.Recipe.COLUMN_IMAGE));
+
         // Retrieve the id from the cursor and
         long id = mCursor.getLong(mCursor.getColumnIndex(VeggedupContract.Recipe._ID));
 
@@ -63,6 +67,12 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Re
         holder.titleTextView.setText(name);
 
         holder.typeTextView.setText(type);
+
+        // Display image
+        GlideApp.with(mContext)
+                .load(url)
+                .placeholder(R.mipmap.test1)
+                .into(holder.cardImageView);
 
         // Set the tag of the itemview in the holder to the id
         holder.itemView.setTag(id);
@@ -97,6 +107,7 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Re
         // Will display the recipe title
         TextView titleTextView;
         TextView typeTextView;
+        ImageView cardImageView;
 
         /**
          * Constructor for our ViewHolder. Within this constructor, we get a reference to our
@@ -109,6 +120,7 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Re
             super(itemView);
             titleTextView = (TextView) itemView.findViewById(R.id.title_text_view);
             typeTextView = (TextView) itemView.findViewById(R.id.type_text_view);
+            cardImageView = (ImageView) itemView.findViewById(R.id.card_image_view);
 
             itemView.setOnClickListener(this);
         }
