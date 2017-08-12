@@ -19,7 +19,6 @@ import android.widget.ProgressBar;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.mediation.customevent.CustomEvent;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.veggedup.veggedup.data.DataUtil;
 import com.veggedup.veggedup.data.VeggedupContract;
@@ -30,7 +29,6 @@ public class MainActivity extends AppCompatActivity implements RecipeListAdapter
         LoaderManager.LoaderCallbacks<Cursor> {
 
     private FirebaseAnalytics mFirebaseAnalytics;
-    private AdView mAdView;
 
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
@@ -51,13 +49,12 @@ public class MainActivity extends AppCompatActivity implements RecipeListAdapter
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         // Ads
-        mAdView = (AdView) findViewById(R.id.adView);
+        AdView mAdView = (AdView) findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
 
         // Swipe to refresh
         mSwipeRefreshLayout = (SwipeRefreshLayout) this.findViewById(R.id.swipeRefreshLayout);
-
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -68,7 +65,6 @@ public class MainActivity extends AppCompatActivity implements RecipeListAdapter
         });
 
         mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator);
-
         RecyclerView recipeRecyclerView;
 
         // Set local attributes to corresponding views
@@ -79,7 +75,7 @@ public class MainActivity extends AppCompatActivity implements RecipeListAdapter
         float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
         int columns = (int) Math.ceil(dpWidth / 540);
 
-        // Set layout for the RecyclerView, because it's a list we are using the linear layout
+        // Set layout for the RecyclerView
         recipeRecyclerView.setLayoutManager(new GridLayoutManager(this, columns));
 
         // Create a DB helper (this will create the DB if run for the first time)
