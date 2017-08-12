@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -19,6 +20,7 @@ import com.veggedup.veggedup.data.VeggedupContract;
 import com.veggedup.veggedup.data.VeggedupDbHelper;
 
 import java.io.IOException;
+import java.util.List;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -28,6 +30,8 @@ public class MainActivity extends AppCompatActivity implements RecipeListAdapter
 
     private FirebaseAnalytics mFirebaseAnalytics;
     private AdView mAdView;
+
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     private RecipeListAdapter mAdapter;
     private SQLiteDatabase mDb;
@@ -45,6 +49,18 @@ public class MainActivity extends AppCompatActivity implements RecipeListAdapter
         mAdView = (AdView) findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
+
+        // Swipe to refresh
+        mSwipeRefreshLayout = (SwipeRefreshLayout) this.findViewById(R.id.swipeRefreshLayout);
+
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // Refresh items
+                Log.i(LOG_TAG, "onRefresh called from SwipeRefreshLayout");
+                initiateRefresh();
+            }
+        });
 
         RecyclerView recipeRecyclerView;
 
@@ -115,6 +131,51 @@ public class MainActivity extends AppCompatActivity implements RecipeListAdapter
         protected void onPostExecute(String results) {
             Log.d("Test", results);
         }
+    }
+
+    private void initiateRefresh() {
+        Log.i(LOG_TAG, "initiateRefresh");
+
+        /**
+         * Execute the background task, which uses {@link android.os.AsyncTask} to load the data.
+         */
+        new veggedupSyncTask().execute();
+    }
+
+    private void onRefreshComplete(String result) {
+        Log.i(LOG_TAG, "onRefreshComplete");
+
+        Log.i(LOG_TAG, result);
+
+        // Stop the refreshing indicator
+        mSwipeRefreshLayout.setRefreshing(false);
+    }
+
+    private class veggedupSyncTask extends AsyncTask<Void, Void, String> {
+
+        static final int TASK_DURATION = 3 * 1000; // 3 seconds
+
+        @Override
+        protected String doInBackground(Void... params) {
+            // Sleep for a small amount of time to simulate a background-task
+            try {
+                Thread.sleep(TASK_DURATION);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            // Return a new random list of cheeses
+            return "test";
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            // Tell the Fragment that the refresh has completed
+            onRefreshComplete(result);
+        }
+
     }
 
 //    public void onClickTestOkHttp(View view) throws IOException {
