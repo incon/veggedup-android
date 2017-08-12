@@ -4,6 +4,9 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.AsyncTaskLoader;
+import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -11,31 +14,32 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.firebase.analytics.FirebaseAnalytics;
-import com.veggedup.veggedup.data.TestUtil;
+import com.veggedup.veggedup.data.DataUtil;
 import com.veggedup.veggedup.data.VeggedupContract;
 import com.veggedup.veggedup.data.VeggedupDbHelper;
 
-import java.io.IOException;
-import java.util.List;
 
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-
-public class MainActivity extends AppCompatActivity implements RecipeListAdapter.RecipeListAdapterOnClickHandler {
+public class MainActivity extends AppCompatActivity implements RecipeListAdapter.RecipeListAdapterOnClickHandler,
+        LoaderManager.LoaderCallbacks<String> {
 
     private FirebaseAnalytics mFirebaseAnalytics;
     private AdView mAdView;
 
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
+    private ProgressBar mLoadingIndicator;
+
     private RecipeListAdapter mAdapter;
     private SQLiteDatabase mDb;
     private final static String LOG_TAG = MainActivity.class.getSimpleName();
+
+    private static final int VEGGEDUP_SYNC_LOADER = 22;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +66,8 @@ public class MainActivity extends AppCompatActivity implements RecipeListAdapter
             }
         });
 
+        mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator);
+
         RecyclerView recipeRecyclerView;
 
         // Set local attributes to corresponding views
@@ -82,17 +88,17 @@ public class MainActivity extends AppCompatActivity implements RecipeListAdapter
         // because you will be adding restaurant customers
         mDb = dbHelper.getWritableDatabase();
 
-        // Setup some mock data
-        TestUtil.insertFakeData(mDb);
-
-        // Get all guest info from the database and save in a cursor
-        Cursor cursor = getAllRecipes();
-
         // Create an adapter for that cursor to display the data
-        mAdapter = new RecipeListAdapter(this, cursor, this);
+        mAdapter = new RecipeListAdapter(this, null, this);
 
         // Link the adapter to the RecyclerView
         recipeRecyclerView.setAdapter(mAdapter);
+
+        /*
+         * Initialize the loader
+         */
+        getSupportLoaderManager().initLoader(VEGGEDUP_SYNC_LOADER, null, this);
+
     }
 
     @Override
@@ -107,30 +113,41 @@ public class MainActivity extends AppCompatActivity implements RecipeListAdapter
         startActivity(recipeDetailIntent);
     }
 
-    public class TestOkHttpTask extends AsyncTask<String, Void, String> {
+    @Override
+    public Loader<String> onCreateLoader(int id, Bundle args) {
 
-        @Override
-        protected String doInBackground(String... strings) {
-            OkHttpClient client = new OkHttpClient();
-
-            Request request = new Request.Builder()
-                    .url("http://veggedup.com")
-                    .build();
-            String results = null;
-            try {
-                Response response = client.newCall(request).execute();
-                results = response.body().string();
-            } catch (IOException e) {
-                e.printStackTrace();
+        return new AsyncTaskLoader<String>(this) {
+            @Override
+            protected void onStartLoading() {
+                /*
+                 * When we initially begin loading in the background, we want to display the
+                 * loading indicator to the user
+                 */
+                mLoadingIndicator.setVisibility(View.VISIBLE);
+                forceLoad();
             }
 
-            return results;
-        }
+            @Override
+            public String loadInBackground() {
+                return String.valueOf(DataUtil.syncData(mDb));
+            }
+        };
+    }
 
-        @Override
-        protected void onPostExecute(String results) {
-            Log.d("Test", results);
-        }
+    @Override
+    public void onLoadFinished(Loader<String> loader, String data) {
+        /* When we finish loading, we want to hide the loading indicator from the user. */
+        mLoadingIndicator.setVisibility(View.INVISIBLE);
+
+        // Get all recipes from the database and save in a cursor
+        mAdapter.swapCursor(getAllRecipes());
+
+        Log.i("onLoadFinished", data);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<String> loader) {
+
     }
 
     private void initiateRefresh() {
@@ -147,25 +164,18 @@ public class MainActivity extends AppCompatActivity implements RecipeListAdapter
 
         Log.i(LOG_TAG, result);
 
+        // Get all recipes from the database and save in a cursor
+        mAdapter.swapCursor(getAllRecipes());
+
         // Stop the refreshing indicator
         mSwipeRefreshLayout.setRefreshing(false);
     }
 
     private class veggedupSyncTask extends AsyncTask<Void, Void, String> {
 
-        static final int TASK_DURATION = 3 * 1000; // 3 seconds
-
         @Override
         protected String doInBackground(Void... params) {
-            // Sleep for a small amount of time to simulate a background-task
-            try {
-                Thread.sleep(TASK_DURATION);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            // Return a new random list of cheeses
-            return "test";
+            return String.valueOf(DataUtil.syncData(mDb));
         }
 
         @Override
@@ -178,9 +188,6 @@ public class MainActivity extends AppCompatActivity implements RecipeListAdapter
 
     }
 
-//    public void onClickTestOkHttp(View view) throws IOException {
-//        new TestOkHttpTask().execute("http://veggedup.com");
-//    }
 
     /**
      * Query the mDb and get all guests from the waitlist table
