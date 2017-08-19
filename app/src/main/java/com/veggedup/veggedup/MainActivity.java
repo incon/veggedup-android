@@ -170,15 +170,15 @@ public class MainActivity extends AppCompatActivity implements RecipeListAdapter
     }
 
     private void onRefreshComplete(String result) {
-        Log.i(LOG_TAG, "onRefreshComplete");
-
-        Log.i(LOG_TAG, result);
-
         // Get all recipes from the database and save in a cursor
         mAdapter.swapCursor(getAllRecipes());
 
         // Stop the refreshing indicator
         mSwipeRefreshLayout.setRefreshing(false);
+    }
+
+    public void refreshCursor() {
+        mAdapter.swapCursor(getAllRecipes());
     }
 
     private class veggedupSyncTask extends AsyncTask<Void, Void, String> {

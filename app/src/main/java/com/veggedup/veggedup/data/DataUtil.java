@@ -84,7 +84,7 @@ public class DataUtil {
             for (ContentValues c : list) {
                 int id = (int) db.insertWithOnConflict(VeggedupContract.Recipe.TABLE_NAME, null, c, SQLiteDatabase.CONFLICT_IGNORE);
                 if (id == -1) {
-                    db.update(VeggedupContract.Recipe.TABLE_NAME, c, "recipeId=?", new String[] {String.valueOf(c.getAsInteger(VeggedupContract.Recipe.COLUMN_RECIPE_ID))});  // number 1 is the _id here, update to variable for your code
+                    db.update(VeggedupContract.Recipe.TABLE_NAME, c, "recipeId=?", new String[] {String.valueOf(c.getAsInteger(VeggedupContract.Recipe.COLUMN_RECIPE_ID))});
                 }
             }
             db.setTransactionSuccessful();

@@ -1,5 +1,6 @@
 package com.veggedup.veggedup;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -10,6 +11,8 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.content.ContentResolverCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -30,17 +33,20 @@ public class RecipeDetailActivity extends AppCompatActivity {
 
     private SQLiteDatabase mDb;
     private Cursor recipe;
+    private boolean favourite;
+    private FloatingActionButton fab;
+    private int recipeId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         VeggedupDbHelper dbHelper = new VeggedupDbHelper(this);
-        mDb = dbHelper.getReadableDatabase();
+        mDb = dbHelper.getWritableDatabase();
 
         Intent intent = getIntent();
         if (intent.hasExtra("RECIPE_ID")){
-            int recipeId = intent.getIntExtra("RECIPE_ID", 0);
+            recipeId = intent.getIntExtra("RECIPE_ID", 0);
             recipe = getRecipe(recipeId);
             recipe.moveToFirst();
         }
@@ -50,12 +56,19 @@ public class RecipeDetailActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab = (FloatingActionButton) findViewById(R.id.fabFavourited);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                favourite = !favourite;
+                ContentValues c = new ContentValues();
+                c.put(VeggedupContract.Recipe.COLUMN_FAVOURITE, favourite ? 1 : 0);
+                mDb.update(VeggedupContract.Recipe.TABLE_NAME, c, "recipeId=?", new String[] {String.valueOf(recipeId)});
+                if (favourite) {
+                    fab.setImageResource(R.drawable.favourited);
+                } else {
+                    fab.setImageResource(R.drawable.unfavourited);
+                }
             }
         });
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -72,18 +85,39 @@ public class RecipeDetailActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(viewPager);
 
         // Get details
-        String recipeTitle = recipe.getString(recipe.getColumnIndex(VeggedupContract.Recipe.COLUMN_TITLE));
-        String recipeType = recipe.getString(recipe.getColumnIndex(VeggedupContract.Recipe.COLUMN_TYPE));
+        String title = recipe.getString(recipe.getColumnIndex(VeggedupContract.Recipe.COLUMN_TITLE));
+        String type = recipe.getString(recipe.getColumnIndex(VeggedupContract.Recipe.COLUMN_TYPE));
+        String description = recipe.getString(recipe.getColumnIndex(VeggedupContract.Recipe.COLUMN_DESCRIPTION));
+        String time = recipe.getString(recipe.getColumnIndex(VeggedupContract.Recipe.COLUMN_DURATION));
+        String ingredientsCount = String.valueOf(recipe.getInt(recipe.getColumnIndex(VeggedupContract.Recipe.COLUMN_INGREDIENTS_COUNT)));
+        String stepsCount = String.valueOf(recipe.getInt(recipe.getColumnIndex(VeggedupContract.Recipe.COLUMN_STEPS_COUNT)));
+        String serves = String.valueOf(recipe.getInt(recipe.getColumnIndex(VeggedupContract.Recipe.COLUMN_SERVERS)));
         String recipeImageURL = recipe.getString(recipe.getColumnIndex(VeggedupContract.Recipe.COLUMN_IMAGE));
+        favourite = recipe.getInt(recipe.getColumnIndex(VeggedupContract.Recipe.COLUMN_FAVOURITE)) == 1;
 
         // Get Elements
-        TextView detailRecipeTitle = (TextView) findViewById(R.id.detailRecipeTittle);
+        TextView detailRecipeTitle = (TextView) findViewById(R.id.detailRecipeTitle);
         TextView detailRecipeType = (TextView) findViewById(R.id.detailRecipeType);
+        TextView detailRecipeDescription = (TextView) findViewById(R.id.detailRecipeDescription);
+        TextView detailRecipeTime = (TextView) findViewById(R.id.detailRecipeTime);
+        TextView detailRecipeIngredientsCount = (TextView) findViewById(R.id.detailRecipeIngredientsCount);
+        TextView detailRecipeStepsCount = (TextView) findViewById(R.id.detailRecipeStepsCount);
+        TextView detailRecipeServes = (TextView) findViewById(R.id.detailRecipeServes);
         ImageView detailRecipeImage = (ImageView) findViewById(R.id.recipeDetailImage);
 
         // Set Views
-        detailRecipeTitle.setText(recipeTitle);
-        detailRecipeType.setText(recipeType);
+        detailRecipeTitle.setText(title);
+        detailRecipeType.setText(type);
+        detailRecipeDescription.setText(description);
+        detailRecipeTime.setText(time);
+        detailRecipeIngredientsCount.setText(ingredientsCount);
+        detailRecipeStepsCount.setText(stepsCount);
+        detailRecipeServes.setText(serves);
+
+        // Fab
+        if (favourite) {
+            fab.setImageResource(R.drawable.favourited);
+        }
 
         // Display image
         GlideApp.with(this)

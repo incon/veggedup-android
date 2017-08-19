@@ -36,7 +36,7 @@
                 android:padding="16dp">
 
                 <TextView
-                    android:id="@+id/detailRecipeTittle"
+                    android:id="@+id/detailRecipeTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="@android:color/white"
@@ -85,13 +85,13 @@
                     android:padding="8dp">
 
                     <ImageView
-                        android:id="@+id/imageView1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         app:srcCompat="@drawable/time" />
 
                     <TextView
+                        android:id="@+id/detailRecipeTime"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_gravity="center"
@@ -110,13 +110,13 @@
                     android:padding="8dp">
 
                     <ImageView
-                        android:id="@+id/imageView2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         app:srcCompat="@drawable/ingredients" />
 
                     <TextView
+                        android:id="@+id/detailRecipeIngredientsCount"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_gravity="center"
@@ -135,13 +135,13 @@
                     android:padding="8dp">
 
                     <ImageView
-                        android:id="@+id/imageView3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         app:srcCompat="@drawable/steps" />
 
                     <TextView
+                        android:id="@+id/detailRecipeStepsCount"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_gravity="center"
@@ -160,13 +160,13 @@
                     android:padding="8dp">
 
                     <ImageView
-                        android:id="@+id/imageView4"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         app:srcCompat="@drawable/serves" />
 
                     <TextView
+                        android:id="@+id/detailRecipeServes"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_gravity="center"
@@ -198,6 +198,7 @@
                 android:textSize="14sp" />
 
             <TextView
+                android:id="@+id/detailRecipeDescription"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingBottom="16dp"
@@ -255,7 +256,7 @@
     </android.support.v4.widget.NestedScrollView>
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
+        android:id="@+id/fabFavourited"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
