@@ -21,10 +21,10 @@
             app:titleEnabled="false">
 
             <ImageView
+                android:id="@+id/recipeDetailImage"
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/food"
                 app:layout_collapseMode="parallax" />
 
             <LinearLayout

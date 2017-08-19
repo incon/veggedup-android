@@ -7,13 +7,8 @@
 
     <ImageView
         android:id="@+id/card_image_view"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginEnd="0dp"
-        android:layout_marginLeft="0dp"
-        android:layout_marginRight="0dp"
-        android:layout_marginStart="0dp"
-        android:layout_marginTop="0dp"
         android:adjustViewBounds="false"
         android:scaleType="centerCrop"
         app:layout_constraintDimensionRatio="w,0.5625:1"
@@ -23,28 +18,35 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@mipmap/test1" />
 
-    <TextView
-        android:id="@+id/type_text_view"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_weight="1"
-        android:textColor="@android:color/black"
-        android:textSize="16sp"
+        android:layout_marginBottom="0dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="0dp"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:background="@drawable/bg_dark_fade_bottom"
         app:layout_constraintBottom_toBottomOf="@+id/card_image_view"
         app:layout_constraintLeft_toLeftOf="@+id/card_image_view"
-        tools:text="Main meal" />
+        app:layout_constraintRight_toRightOf="@+id/card_image_view">
 
-    <TextView
-        android:id="@+id/title_text_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="TextView"
-        android:textColor="@android:color/black"
-        android:textSize="24sp"
-        app:layout_constraintBottom_toTopOf="@+id/type_text_view"
-        app:layout_constraintLeft_toLeftOf="@+id/type_text_view" />
+        <TextView
+            android:id="@+id/title_text_view"
+            tools:text="Recipe Title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/type_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:textSize="14sp"
+            tools:text="Main meal" />
+
+    </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

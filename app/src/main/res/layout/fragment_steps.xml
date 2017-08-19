@@ -2,12 +2,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:context="com.veggedup.tab.tabs.StepsFragment">
+    tools:context="com.veggedup.veggedup.StepsFragment">
 
     <ListView
         android:id="@+id/stepsList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:scrollbars="none"
         android:listSelector="@android:color/transparent"
         android:divider="@null"
         android:dividerHeight="0dp"

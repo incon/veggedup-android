@@ -16,10 +16,12 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.veggedup.veggedup.data.VeggedupContract;
 import com.veggedup.veggedup.data.VeggedupDbHelper;
+import com.veggedup.veggedup.module.GlideApp;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,14 +74,22 @@ public class RecipeDetailActivity extends AppCompatActivity {
         // Get details
         String recipeTitle = recipe.getString(recipe.getColumnIndex(VeggedupContract.Recipe.COLUMN_TITLE));
         String recipeType = recipe.getString(recipe.getColumnIndex(VeggedupContract.Recipe.COLUMN_TYPE));
+        String recipeImageURL = recipe.getString(recipe.getColumnIndex(VeggedupContract.Recipe.COLUMN_IMAGE));
 
         // Get Elements
         TextView detailRecipeTitle = (TextView) findViewById(R.id.detailRecipeTittle);
         TextView detailRecipeType = (TextView) findViewById(R.id.detailRecipeType);
+        ImageView detailRecipeImage = (ImageView) findViewById(R.id.recipeDetailImage);
 
         // Set Views
         detailRecipeTitle.setText(recipeTitle);
         detailRecipeType.setText(recipeType);
+
+        // Display image
+        GlideApp.with(this)
+                .load(recipeImageURL)
+                .placeholder(R.mipmap.test1)
+                .into(detailRecipeImage);
     }
 
     private Cursor getRecipe(int recipeId) {
