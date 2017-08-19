@@ -11,14 +11,14 @@
 
         <TextView
             android:id="@+id/qtyTextView"
-            android:layout_width="40sp"
+            android:layout_width="35sp"
             android:layout_height="wrap_content"
             android:text="Demo"
             android:textColor="@color/colorAccent" />
 
         <TextView
             android:id="@+id/uomTextView"
-            android:layout_width="60sp"
+            android:layout_width="70sp"
             android:layout_height="wrap_content"
             android:text="Demo"
             android:textColor="@color/colorAccent" />
