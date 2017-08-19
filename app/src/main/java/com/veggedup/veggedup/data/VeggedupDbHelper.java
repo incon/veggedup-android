@@ -24,7 +24,7 @@ public class VeggedupDbHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
 
         // Create a table to hold recipe data
-        final String SQL_CREATE_WAITLIST_TABLE = "CREATE TABLE " + Recipe.TABLE_NAME + " (" +
+        final String SQL_CREATE_RECIPE_TABLE = "CREATE TABLE " + Recipe.TABLE_NAME + " (" +
                 Recipe._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                 Recipe.COLUMN_RECIPE_ID + " INTEGER UNIQUE NOT NULL, " +
                 Recipe.COLUMN_FAVOURITE + " INTEGER NOT NULL DEFAULT 0, " +
@@ -40,7 +40,7 @@ public class VeggedupDbHelper extends SQLiteOpenHelper {
                 Recipe.COLUMN_STEPS + " TEXT NOT NULL " +
                 "); ";
 
-        sqLiteDatabase.execSQL(SQL_CREATE_WAITLIST_TABLE);
+        sqLiteDatabase.execSQL(SQL_CREATE_RECIPE_TABLE);
     }
 
     @Override
