@@ -80,11 +80,12 @@ public class DataUtil {
 
         try {
             db.beginTransaction();
-            //clear the table first
-            db.delete(VeggedupContract.Recipe.TABLE_NAME, null, null);
             //go through the list and add one by one
             for (ContentValues c : list) {
-                db.insert(VeggedupContract.Recipe.TABLE_NAME, null, c);
+                int id = (int) db.insertWithOnConflict(VeggedupContract.Recipe.TABLE_NAME, null, c, SQLiteDatabase.CONFLICT_IGNORE);
+                if (id == -1) {
+                    db.update(VeggedupContract.Recipe.TABLE_NAME, c, "recipe_id=?", new String[] {String.valueOf(c.getAsInteger(VeggedupContract.Recipe.COLUMN_RECIPE_ID))});  // number 1 is the _id here, update to variable for your code
+                }
             }
             db.setTransactionSuccessful();
         } catch (SQLException e) {

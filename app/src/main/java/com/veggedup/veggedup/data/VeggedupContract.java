@@ -7,6 +7,7 @@ public class VeggedupContract {
     public static final class Recipe implements BaseColumns {
         public static final String TABLE_NAME = "recipes";
         public static final String COLUMN_RECIPE_ID = "recipeId";
+        public static final String COLUMN_FAVOURITE = "favourite";
         public static final String COLUMN_TITLE = "title";
         public static final String COLUMN_IMAGE = "image";
         public static final String COLUMN_DURATION = "duration";

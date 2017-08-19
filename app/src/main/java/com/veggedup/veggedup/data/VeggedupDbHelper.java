@@ -26,7 +26,8 @@ public class VeggedupDbHelper extends SQLiteOpenHelper {
         // Create a table to hold recipe data
         final String SQL_CREATE_WAITLIST_TABLE = "CREATE TABLE " + Recipe.TABLE_NAME + " (" +
                 Recipe._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                Recipe.COLUMN_RECIPE_ID + " INTEGER NOT NULL, " +
+                Recipe.COLUMN_RECIPE_ID + " INTEGER UNIQUE NOT NULL, " +
+                Recipe.COLUMN_FAVOURITE + " INTEGER NOT NULL DEFAULT 0, " +
                 Recipe.COLUMN_TITLE + " TEXT NOT NULL, " +
                 Recipe.COLUMN_IMAGE + " TEXT NOT NULL, " +
                 Recipe.COLUMN_DURATION + " TEXT NOT NULL, " +

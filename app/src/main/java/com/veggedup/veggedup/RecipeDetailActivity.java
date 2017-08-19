@@ -6,17 +6,28 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import com.veggedup.veggedup.data.VeggedupContract;
 import com.veggedup.veggedup.data.VeggedupDbHelper;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class RecipeDetailActivity extends AppCompatActivity {
 
     private SQLiteDatabase mDb;
+    private Cursor recipe;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,20 +36,17 @@ public class RecipeDetailActivity extends AppCompatActivity {
         VeggedupDbHelper dbHelper = new VeggedupDbHelper(this);
         mDb = dbHelper.getReadableDatabase();
 
-        Cursor recipe = null;
         Intent intent = getIntent();
         if (intent.hasExtra("RECIPE_ID")){
             int recipeId = intent.getIntExtra("RECIPE_ID", 0);
             recipe = getRecipe(recipeId);
             recipe.moveToFirst();
-            Log.v("RECIPE_ID", String.valueOf(recipeId));
         }
-        
-        int recipeId = recipe.getInt(recipe.getColumnIndex(VeggedupContract.Recipe.COLUMN_RECIPE_ID));
 
         setContentView(R.layout.activity_recipe_detail);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -49,6 +57,29 @@ public class RecipeDetailActivity extends AppCompatActivity {
             }
         });
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
+
+        // setupViewPager(viewPager);
+        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
+        adapter.addFragment(new IngredientsFragment(), "Ingredients");
+        adapter.addFragment(new StepsFragment(), "Steps");
+        viewPager.setAdapter(adapter);
+
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        tabLayout.setupWithViewPager(viewPager);
+
+        // Get details
+        String recipeTitle = recipe.getString(recipe.getColumnIndex(VeggedupContract.Recipe.COLUMN_TITLE));
+        String recipeType = recipe.getString(recipe.getColumnIndex(VeggedupContract.Recipe.COLUMN_TYPE));
+
+        // Get Elements
+        TextView detailRecipeTitle = (TextView) findViewById(R.id.detailRecipeTittle);
+        TextView detailRecipeType = (TextView) findViewById(R.id.detailRecipeType);
+
+        // Set Views
+        detailRecipeTitle.setText(recipeTitle);
+        detailRecipeType.setText(recipeType);
     }
 
     private Cursor getRecipe(int recipeId) {
@@ -61,6 +92,56 @@ public class RecipeDetailActivity extends AppCompatActivity {
                 null,
                 VeggedupContract.Recipe.COLUMN_RECIPE_ID
         );
+    }
+
+    class ViewPagerAdapter extends FragmentPagerAdapter {
+        private final List<Fragment> mFragmentList = new ArrayList<>();
+        private final List<String> mFragmentTitleList = new ArrayList<>();
+
+        public ViewPagerAdapter(FragmentManager manager) {
+            super(manager);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return mFragmentList.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return mFragmentList.size();
+        }
+
+        public void addFragment(Fragment fragment, String title) {
+            mFragmentList.add(fragment);
+            mFragmentTitleList.add(title);
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return mFragmentTitleList.get(position);
+        }
+
+    }
+
+    public String getStepsJSON() {
+        return recipe.getString(recipe.getColumnIndex(VeggedupContract.Recipe.COLUMN_STEPS));
+    }
+
+    public String getIngredientsJSON() {
+        return recipe.getString(recipe.getColumnIndex(VeggedupContract.Recipe.COLUMN_INGREDIENTS));
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
 }
