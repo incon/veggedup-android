@@ -55,18 +55,28 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Re
 
         // Update the view holder with the information needed to display
         String name = mCursor.getString(mCursor.getColumnIndex(VeggedupContract.Recipe.COLUMN_TITLE));
-
         String type = mCursor.getString(mCursor.getColumnIndex(VeggedupContract.Recipe.COLUMN_TYPE));
-
         String url = mCursor.getString(mCursor.getColumnIndex(VeggedupContract.Recipe.COLUMN_IMAGE));
+        String time = mCursor.getString(mCursor.getColumnIndex(VeggedupContract.Recipe.COLUMN_DURATION));
+        String ingredientsCount = String.valueOf(mCursor.getInt(mCursor.getColumnIndex(VeggedupContract.Recipe.COLUMN_INGREDIENTS_COUNT)));
+        String stepsCount = String.valueOf(mCursor.getInt(mCursor.getColumnIndex(VeggedupContract.Recipe.COLUMN_STEPS_COUNT)));
+        String serves = String.valueOf(mCursor.getInt(mCursor.getColumnIndex(VeggedupContract.Recipe.COLUMN_SERVERS)));
+        Boolean favourite = mCursor.getInt(mCursor.getColumnIndex(VeggedupContract.Recipe.COLUMN_FAVOURITE)) == 1;
 
         // Retrieve the id from the cursor and
         long id = mCursor.getLong(mCursor.getColumnIndex(VeggedupContract.Recipe._ID));
 
         // Display the recipe title
         holder.titleTextView.setText(name);
-
         holder.typeTextView.setText(type);
+        holder.timeTextView.setText(time);
+        holder.ingredientsCountTextView.setText(ingredientsCount);
+        holder.stepsCountTextView.setText(stepsCount);
+        holder.servesTextView.setText(serves);
+
+        if (favourite) {
+            holder.favouriteImageView.setImageResource(R.drawable.favourited);
+        }
 
         // Display image
         GlideApp.with(mContext)
@@ -112,6 +122,11 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Re
         TextView titleTextView;
         TextView typeTextView;
         ImageView cardImageView;
+        TextView servesTextView;
+        TextView timeTextView;
+        TextView ingredientsCountTextView;
+        TextView stepsCountTextView;
+        ImageView favouriteImageView;
 
         /**
          * Constructor for our ViewHolder. Within this constructor, we get a reference to our
@@ -125,6 +140,11 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Re
             titleTextView = (TextView) itemView.findViewById(R.id.title_text_view);
             typeTextView = (TextView) itemView.findViewById(R.id.type_text_view);
             cardImageView = (ImageView) itemView.findViewById(R.id.card_image_view);
+            servesTextView = (TextView) itemView.findViewById(R.id.serves);
+            timeTextView = (TextView) itemView.findViewById(R.id.time);
+            ingredientsCountTextView = (TextView) itemView.findViewById(R.id.ingredients_count);
+            stepsCountTextView = (TextView) itemView.findViewById(R.id.steps_count);
+            favouriteImageView = (ImageView) itemView.findViewById(R.id.favourite);
 
             itemView.setOnClickListener(this);
         }

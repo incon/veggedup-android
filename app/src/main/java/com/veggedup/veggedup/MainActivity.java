@@ -74,8 +74,6 @@ public class MainActivity extends AppCompatActivity implements RecipeListAdapter
             }
         });
 
-        mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator);
-
         // Set local attributes to corresponding views
         recipeRecyclerView = (RecyclerView) findViewById(R.id.recipe_list_view);
 
@@ -104,9 +102,15 @@ public class MainActivity extends AppCompatActivity implements RecipeListAdapter
         recipeRecyclerView.setAdapter(mAdapter);
 
         /*
-         * Initialize the loader
+         * Initialize the loader on first load
          */
-        getSupportLoaderManager().initLoader(VEGGEDUP_SYNC_LOADER, null, this);
+        Intent intent = getIntent();
+        if (intent.hasExtra("REFRESH_CURSOR")) {
+            mAdapter.swapCursor(getAllRecipes());
+        } else {
+            mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator);
+            getSupportLoaderManager().initLoader(VEGGEDUP_SYNC_LOADER, null, this);
+        }
 
     }
 
@@ -193,7 +197,7 @@ public class MainActivity extends AppCompatActivity implements RecipeListAdapter
         // Get all recipes from the database and save in a cursor
         Cursor updatedCursor = getAllRecipes();
 
-        mAdapter.swapCursor(getAllRecipes());
+        mAdapter.swapCursor(updatedCursor);
 
         // Update list set
         if ((updatedCursor != null) && (updatedCursor.getCount() > 0)) {
@@ -206,10 +210,6 @@ public class MainActivity extends AppCompatActivity implements RecipeListAdapter
 
         // Stop the refreshing indicator
         mSwipeRefreshLayout.setRefreshing(false);
-    }
-
-    public void refreshCursor() {
-        mAdapter.swapCursor(getAllRecipes());
     }
 
     private class veggedupSyncTask extends AsyncTask<Void, Void, String> {

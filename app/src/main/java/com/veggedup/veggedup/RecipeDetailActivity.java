@@ -1,5 +1,6 @@
 package com.veggedup.veggedup;
 
+import android.app.PendingIntent;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -96,7 +97,7 @@ public class RecipeDetailActivity extends AppCompatActivity {
         // Get details
         String title = recipe.getString(recipe.getColumnIndex(VeggedupContract.Recipe.COLUMN_TITLE));
         String type = recipe.getString(recipe.getColumnIndex(VeggedupContract.Recipe.COLUMN_TYPE));
-        String description = recipe.getString(recipe.getColumnIndex(VeggedupContract.Recipe.COLUMN_DESCRIPTION));
+        // String description = recipe.getString(recipe.getColumnIndex(VeggedupContract.Recipe.COLUMN_DESCRIPTION));
         String time = recipe.getString(recipe.getColumnIndex(VeggedupContract.Recipe.COLUMN_DURATION));
         String ingredientsCount = String.valueOf(recipe.getInt(recipe.getColumnIndex(VeggedupContract.Recipe.COLUMN_INGREDIENTS_COUNT)));
         String stepsCount = String.valueOf(recipe.getInt(recipe.getColumnIndex(VeggedupContract.Recipe.COLUMN_STEPS_COUNT)));
@@ -190,7 +191,12 @@ public class RecipeDetailActivity extends AppCompatActivity {
         int id = item.getItemId();
         switch (id) {
             case android.R.id.home:
-                onBackPressed();
+                Intent intent = new Intent(this, MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                Bundle bundle = new Bundle();
+                bundle.putBoolean("REFRESH_CURSOR", true);
+                intent.putExtras(bundle);
+                startActivity(intent);
                 return true;
         }
 
