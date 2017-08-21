@@ -16,6 +16,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -33,6 +34,9 @@ public class MainActivity extends AppCompatActivity implements RecipeListAdapter
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
     private ProgressBar mLoadingIndicator;
+
+    private RecyclerView recipeRecyclerView;
+    private TextView emptyView;
 
     private RecipeListAdapter mAdapter;
     private SQLiteDatabase mDb;
@@ -65,10 +69,12 @@ public class MainActivity extends AppCompatActivity implements RecipeListAdapter
         });
 
         mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator);
-        RecyclerView recipeRecyclerView;
 
         // Set local attributes to corresponding views
-        recipeRecyclerView = (RecyclerView) this.findViewById(R.id.recipe_list_view);
+        recipeRecyclerView = (RecyclerView) findViewById(R.id.recipe_list_view);
+
+        // Empty view
+        emptyView = (TextView) findViewById(R.id.empty_view);
 
         // Best amount of columns based off the screen size
         DisplayMetrics displayMetrics = this.getResources().getDisplayMetrics();
@@ -151,8 +157,17 @@ public class MainActivity extends AppCompatActivity implements RecipeListAdapter
         /* When we finish loading, we want to hide the loading indicator from the user. */
         mLoadingIndicator.setVisibility(View.INVISIBLE);
 
-        // Get all recipes from the database and save in a cursor
-        mAdapter.swapCursor(recipeData);
+
+        // Update list set
+        if ((recipeData != null) && (recipeData.getCount() > 0)) {
+            recipeRecyclerView.setVisibility(View.VISIBLE);
+            emptyView.setVisibility(View.GONE);
+            mAdapter.swapCursor(recipeData);
+        }
+        else {
+            recipeRecyclerView.setVisibility(View.GONE);
+            emptyView.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -171,7 +186,19 @@ public class MainActivity extends AppCompatActivity implements RecipeListAdapter
 
     private void onRefreshComplete(String result) {
         // Get all recipes from the database and save in a cursor
+        Cursor updatedCursor = getAllRecipes();
+
         mAdapter.swapCursor(getAllRecipes());
+
+        // Update list set
+        if ((updatedCursor != null) && (updatedCursor.getCount() > 0)) {
+            recipeRecyclerView.setVisibility(View.VISIBLE);
+            emptyView.setVisibility(View.GONE);
+        }
+        else {
+            recipeRecyclerView.setVisibility(View.GONE);
+            emptyView.setVisibility(View.VISIBLE);
+        }
 
         // Stop the refreshing indicator
         mSwipeRefreshLayout.setRefreshing(false);

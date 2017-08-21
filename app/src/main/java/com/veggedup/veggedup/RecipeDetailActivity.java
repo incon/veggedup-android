@@ -122,7 +122,7 @@ public class RecipeDetailActivity extends AppCompatActivity {
         // Display image
         GlideApp.with(this)
                 .load(recipeImageURL)
-                .placeholder(R.mipmap.test1)
+                .error(R.drawable.placeholder)
                 .into(detailRecipeImage);
     }
 

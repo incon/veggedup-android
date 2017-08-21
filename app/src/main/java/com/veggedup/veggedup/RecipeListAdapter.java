@@ -71,7 +71,7 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Re
         // Display image
         GlideApp.with(mContext)
                 .load(url)
-                .placeholder(R.mipmap.test1)
+                .error(R.drawable.placeholder)
                 .into(holder.cardImageView);
 
         // Set the tag of the itemview in the holder to the id
