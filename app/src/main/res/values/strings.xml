@@ -4,6 +4,9 @@
     <string name="title_activity_recipe_detail">Recipe Detail</string>
 
     <string name="no_data_available">Please check you internet connect and swipe to refresh to try again.</string>
+    <string name="no_favourites">You currently have no favourited recipes. Click the heart in the top menu to show all recipes.</string>
+    <string name="filter_by_favourites">Filter to favourites only.</string>
+    <string name="show_all">Show all recipes.</string>
     <!-- Ad banner with demo mode key -->
     <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
 </resources>

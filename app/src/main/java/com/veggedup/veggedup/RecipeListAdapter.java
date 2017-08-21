@@ -30,8 +30,9 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Re
 
     /**
      * Constructor using the context and the db cursor
+     *
      * @param context the calling context/activity
-     * @param cursor the db cursor with recipe data to display
+     * @param cursor  the db cursor with recipe data to display
      */
     public RecipeListAdapter(Context context, Cursor cursor, RecipeListAdapterOnClickHandler clickHandler) {
         this.mContext = context;
@@ -76,6 +77,8 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Re
 
         if (favourite) {
             holder.favouriteImageView.setImageResource(R.drawable.favourited);
+        } else {
+            holder.favouriteImageView.setImageResource(R.drawable.unfavourited);
         }
 
         // Display image

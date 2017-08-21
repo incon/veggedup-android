@@ -15,6 +15,8 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -38,6 +40,9 @@ public class MainActivity extends AppCompatActivity implements RecipeListAdapter
 
     private RecyclerView recipeRecyclerView;
     private TextView emptyView;
+    private TextView noFavouritesView;
+
+    private boolean favouritesOnly = false;
 
     private RecipeListAdapter mAdapter;
     private SQLiteDatabase mDb;
@@ -77,8 +82,9 @@ public class MainActivity extends AppCompatActivity implements RecipeListAdapter
         // Set local attributes to corresponding views
         recipeRecyclerView = (RecyclerView) findViewById(R.id.recipe_list_view);
 
-        // Empty view
+        // Empty views
         emptyView = (TextView) findViewById(R.id.empty_view);
+        noFavouritesView = (TextView) findViewById(R.id.no_favourites_view);
 
         // Best amount of columns based off the screen size
         DisplayMetrics displayMetrics = this.getResources().getDisplayMetrics();
@@ -230,6 +236,45 @@ public class MainActivity extends AppCompatActivity implements RecipeListAdapter
     }
 
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+
+
+        switch (item.getItemId()) {
+            case R.id.menu_favourite:
+                favouritesOnly = !favouritesOnly;
+                if (favouritesOnly) {
+                    Cursor favouriteRecipes = getFavouriteRecipes();
+                    item.setIcon(R.drawable.favourited_white);
+                    item.setTitle(R.string.show_all);
+                    if ((favouriteRecipes != null) && (favouriteRecipes.getCount() > 0)) {
+                        recipeRecyclerView.setVisibility(View.VISIBLE);
+                        noFavouritesView.setVisibility(View.GONE);
+                        mAdapter.swapCursor(favouriteRecipes);
+                    } else {
+                        recipeRecyclerView.setVisibility(View.GONE);
+                        noFavouritesView.setVisibility(View.VISIBLE);
+                    }
+                } else {
+                    recipeRecyclerView.setVisibility(View.VISIBLE);
+                    noFavouritesView.setVisibility(View.GONE);
+                    item.setIcon(R.drawable.unfavourited_white);
+                    item.setTitle(R.string.filter_by_favourites);
+                    mAdapter.swapCursor(getAllRecipes());
+                }
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+
     /**
      * Query the mDb and get all guests from the waitlist table
      *
@@ -243,7 +288,24 @@ public class MainActivity extends AppCompatActivity implements RecipeListAdapter
                 null,
                 null,
                 null,
-                VeggedupContract.Recipe.COLUMN_RECIPE_ID
+                VeggedupContract.Recipe.COLUMN_RECIPE_ID + " DESC"
+        );
+    }
+
+    /**
+     * Query the mDb and get all guests from the waitlist table
+     *
+     * @return Cursor containing the list of guests
+     */
+    private Cursor getFavouriteRecipes() {
+        return mDb.query(
+                VeggedupContract.Recipe.TABLE_NAME,
+                null,
+                VeggedupContract.Recipe.COLUMN_FAVOURITE + "=" + 1,
+                null,
+                null,
+                null,
+                VeggedupContract.Recipe.COLUMN_RECIPE_ID + " DESC"
         );
     }
 }

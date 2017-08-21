@@ -32,6 +32,16 @@
                     android:visibility="gone"
                     tools:text="Empty message" />
 
+                <TextView
+                    android:id="@+id/no_favourites_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:padding="16dp"
+                    android:text="@string/no_favourites"
+                    android:visibility="gone"
+                    tools:text="No favourites" />
+
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/recipe_list_view"
                     android:layout_width="match_parent"
