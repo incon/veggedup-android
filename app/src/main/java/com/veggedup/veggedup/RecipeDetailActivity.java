@@ -98,7 +98,7 @@ public class RecipeDetailActivity extends AppCompatActivity {
         // Get Elements
         TextView detailRecipeTitle = (TextView) findViewById(R.id.detailRecipeTitle);
         TextView detailRecipeType = (TextView) findViewById(R.id.detailRecipeType);
-        TextView detailRecipeDescription = (TextView) findViewById(R.id.detailRecipeDescription);
+        // TextView detailRecipeDescription = (TextView) findViewById(R.id.detailRecipeDescription);
         TextView detailRecipeTime = (TextView) findViewById(R.id.detailRecipeTime);
         TextView detailRecipeIngredientsCount = (TextView) findViewById(R.id.detailRecipeIngredientsCount);
         TextView detailRecipeStepsCount = (TextView) findViewById(R.id.detailRecipeStepsCount);
@@ -108,7 +108,7 @@ public class RecipeDetailActivity extends AppCompatActivity {
         // Set Views
         detailRecipeTitle.setText(title);
         detailRecipeType.setText(type);
-        detailRecipeDescription.setText(description);
+        // detailRecipeDescription.setText(description);
         detailRecipeTime.setText(time);
         detailRecipeIngredientsCount.setText(ingredientsCount);
         detailRecipeStepsCount.setText(stepsCount);

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -97,7 +98,7 @@
                         android:layout_gravity="center"
                         android:paddingTop="4dp"
                         android:textSize="12sp"
-                        android:text="40mins"
+                        tools:text="40mins"
                         android:textStyle="bold"
                         android:fontFamily="sans-serif-condensed"
                         android:textColor="@color/colorAccent" />
@@ -122,7 +123,7 @@
                         android:layout_gravity="center"
                         android:paddingTop="4dp"
                         android:textSize="12sp"
-                        android:text="8"
+                        tools:text="8"
                         android:textStyle="bold"
                         android:fontFamily="sans-serif-condensed"
                         android:textColor="@color/colorAccent" />
@@ -147,7 +148,7 @@
                         android:layout_gravity="center"
                         android:paddingTop="4dp"
                         android:textSize="12sp"
-                        android:text="2"
+                        tools:text="2"
                         android:textStyle="bold"
                         android:fontFamily="sans-serif-condensed"
                         android:textColor="@color/colorAccent" />
@@ -172,42 +173,12 @@
                         android:layout_gravity="center"
                         android:paddingTop="4dp"
                         android:textSize="12sp"
-                        android:text="4"
+                        tools:text="4"
                         android:textStyle="bold"
                         android:fontFamily="sans-serif-condensed"
                         android:textColor="@color/colorAccent" />
                 </LinearLayout>
             </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#EAEAEA"/>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp"
-                android:paddingTop="16dp"
-                android:fontFamily="sans-serif-smallcaps"
-                android:text="Description"
-                android:textStyle="bold"
-                android:textAllCaps="true"
-                android:textColor="@color/colorAccent"
-                android:textSize="14sp" />
-
-            <TextView
-                android:id="@+id/detailRecipeDescription"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingBottom="16dp"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp"
-                android:paddingTop="2dp"
-                android:lineSpacingExtra="2sp"
-                android:textColor="@color/colorPrimaryText"
-                android:text="This is an example of me talking about one of my recipes as a description" />
 
             <LinearLayout
                 android:layout_width="match_parent"
