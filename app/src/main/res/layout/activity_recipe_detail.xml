@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_main"
@@ -57,16 +58,16 @@
                 android:layout_height="200dp"
                 app:layout_collapseMode="pin"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-                app:theme="@style/ToolBarStyle">
-            </android.support.v7.widget.Toolbar>
+                app:theme="@style/ToolBarStyle"></android.support.v7.widget.Toolbar>
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
+
     <android.support.v4.widget.NestedScrollView
+        android:id="@+id/nestedScrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:id="@+id/nestedScrollView">
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -96,12 +97,12 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_gravity="center"
-                        android:paddingTop="4dp"
-                        android:textSize="12sp"
-                        tools:text="40mins"
-                        android:textStyle="bold"
                         android:fontFamily="sans-serif-condensed"
-                        android:textColor="@color/colorAccent" />
+                        android:paddingTop="4dp"
+                        android:textColor="@color/colorAccent"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        tools:text="40mins" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -121,12 +122,12 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_gravity="center"
-                        android:paddingTop="4dp"
-                        android:textSize="12sp"
-                        tools:text="8"
-                        android:textStyle="bold"
                         android:fontFamily="sans-serif-condensed"
-                        android:textColor="@color/colorAccent" />
+                        android:paddingTop="4dp"
+                        android:textColor="@color/colorAccent"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        tools:text="8" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -146,12 +147,12 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_gravity="center"
-                        android:paddingTop="4dp"
-                        android:textSize="12sp"
-                        tools:text="2"
-                        android:textStyle="bold"
                         android:fontFamily="sans-serif-condensed"
-                        android:textColor="@color/colorAccent" />
+                        android:paddingTop="4dp"
+                        android:textColor="@color/colorAccent"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        tools:text="2" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -171,58 +172,58 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_gravity="center"
-                        android:paddingTop="4dp"
-                        android:textSize="12sp"
-                        tools:text="4"
-                        android:textStyle="bold"
                         android:fontFamily="sans-serif-condensed"
-                        android:textColor="@color/colorAccent" />
+                        android:paddingTop="4dp"
+                        android:textColor="@color/colorAccent"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        tools:text="4" />
                 </LinearLayout>
             </LinearLayout>
 
-            <LinearLayout
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#EAEAEA" />
+
+            <android.support.design.widget.TabLayout
+                android:id="@+id/tabs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <android.support.design.widget.TabItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Ingredients" />
+
+                <android.support.design.widget.TabItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Steps" />
+
+            </android.support.design.widget.TabLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#EAEAEA" />
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/viewpager"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+            <com.google.android.gms.ads.AdView
+                android:id="@+id/adView2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="#EAEAEA"/>
-
-                <android.support.design.widget.TabLayout
-                    android:id="@+id/tabs"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    app:tabGravity="fill">
-
-                    <android.support.design.widget.TabItem
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Ingredients" />
-
-                    <android.support.design.widget.TabItem
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Steps" />
-
-                </android.support.design.widget.TabLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="#EAEAEA"/>
-
-                <android.support.v4.view.ViewPager
-                    android:id="@+id/viewpager"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-
-            </LinearLayout>
+                ads:adSize="BANNER"
+                ads:adUnitId="@string/banner_ad_unit_id" />
 
         </LinearLayout>
+
 
     </android.support.v4.widget.NestedScrollView>
 
@@ -233,9 +234,9 @@
         android:layout_margin="16dp"
         android:clickable="true"
         app:elevation="6dp"
-        app:pressedTranslationZ="12dp"
-        app:srcCompat="@drawable/unfavourited"
         app:layout_anchor="@id/collapse"
-        app:layout_anchorGravity="bottom|right|end" />
+        app:layout_anchorGravity="bottom|right|end"
+        app:pressedTranslationZ="12dp"
+        app:srcCompat="@drawable/unfavourited" />
 
 </android.support.design.widget.CoordinatorLayout>

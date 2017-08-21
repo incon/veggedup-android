@@ -1,6 +1,7 @@
 package com.veggedup.veggedup;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
@@ -48,6 +49,11 @@ public class MainActivity extends AppCompatActivity implements RecipeListAdapter
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Lock portrait for mobile
+        if (getResources().getBoolean(R.bool.portrait_only)) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        }
 
         // Firebase Analytics
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
@@ -163,8 +169,7 @@ public class MainActivity extends AppCompatActivity implements RecipeListAdapter
             recipeRecyclerView.setVisibility(View.VISIBLE);
             emptyView.setVisibility(View.GONE);
             mAdapter.swapCursor(recipeData);
-        }
-        else {
+        } else {
             recipeRecyclerView.setVisibility(View.GONE);
             emptyView.setVisibility(View.VISIBLE);
         }
@@ -194,8 +199,7 @@ public class MainActivity extends AppCompatActivity implements RecipeListAdapter
         if ((updatedCursor != null) && (updatedCursor.getCount() > 0)) {
             recipeRecyclerView.setVisibility(View.VISIBLE);
             emptyView.setVisibility(View.GONE);
-        }
-        else {
+        } else {
             recipeRecyclerView.setVisibility(View.GONE);
             emptyView.setVisibility(View.VISIBLE);
         }

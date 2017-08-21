@@ -2,26 +2,25 @@ package com.veggedup.veggedup;
 
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.content.ContentResolverCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.veggedup.veggedup.data.VeggedupContract;
 import com.veggedup.veggedup.data.VeggedupDbHelper;
 import com.veggedup.veggedup.module.GlideApp;
@@ -40,18 +39,28 @@ public class RecipeDetailActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_recipe_detail);
+
+        // Lock portrait for mobile
+        if (getResources().getBoolean(R.bool.portrait_only)) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        }
+
+        // Ads
+        AdView mAdView = (AdView) findViewById(R.id.adView2);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
 
         VeggedupDbHelper dbHelper = new VeggedupDbHelper(this);
         mDb = dbHelper.getWritableDatabase();
 
         Intent intent = getIntent();
-        if (intent.hasExtra("RECIPE_ID")){
+        if (intent.hasExtra("RECIPE_ID")) {
             recipeId = intent.getIntExtra("RECIPE_ID", 0);
             recipe = getRecipe(recipeId);
             recipe.moveToFirst();
         }
 
-        setContentView(R.layout.activity_recipe_detail);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -63,7 +72,7 @@ public class RecipeDetailActivity extends AppCompatActivity {
                 favourite = !favourite;
                 ContentValues c = new ContentValues();
                 c.put(VeggedupContract.Recipe.COLUMN_FAVOURITE, favourite ? 1 : 0);
-                mDb.update(VeggedupContract.Recipe.TABLE_NAME, c, "recipeId=?", new String[] {String.valueOf(recipeId)});
+                mDb.update(VeggedupContract.Recipe.TABLE_NAME, c, "recipeId=?", new String[]{String.valueOf(recipeId)});
                 if (favourite) {
                     fab.setImageResource(R.drawable.favourited);
                 } else {
@@ -138,7 +147,7 @@ public class RecipeDetailActivity extends AppCompatActivity {
         );
     }
 
-    class ViewPagerAdapter extends FragmentPagerAdapter {
+    private class ViewPagerAdapter extends FragmentPagerAdapter {
         private final List<Fragment> mFragmentList = new ArrayList<>();
         private final List<String> mFragmentTitleList = new ArrayList<>();
 
