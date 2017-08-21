@@ -39,16 +39,18 @@
 
                 <TextView
                     android:id="@+id/detailRecipeTitle"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@android:color/white"
-                    android:textSize="24sp" />
+                    android:textSize="24sp"
+                    tools:text="Recipe" />
 
                 <TextView
                     android:id="@+id/detailRecipeType"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@android:color/white" />
+                    android:textColor="@android:color/white"
+                    tools:text="Type" />
             </LinearLayout>
 
 
@@ -233,9 +235,9 @@
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:clickable="true"
+        ads:layout_anchorGravity="bottom|end"
         app:elevation="6dp"
         app:layout_anchor="@id/collapse"
-        app:layout_anchorGravity="bottom|right|end"
         app:pressedTranslationZ="12dp"
         app:srcCompat="@drawable/unfavourited" />
 
