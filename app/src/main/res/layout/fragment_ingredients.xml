@@ -1,17 +1,12 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     tools:context="com.veggedup.veggedup.IngredientsFragment">
 
-    <ListView
-        android:id="@+id/ingredientsList"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/ingredientsRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scrollbars="none"
-        android:listSelector="@android:color/transparent"
-        android:divider="@null"
-        android:dividerHeight="0dp"
-        android:padding="12dp"
-        />
+        android:padding="12dp" />
 </FrameLayout>

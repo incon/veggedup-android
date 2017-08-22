@@ -2,14 +2,14 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:padding="4dp">
+    android:layout_height="wrap_content">
 
     <TextView
         android:id="@+id/stepTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:lineSpacingExtra="2sp"
+        android:padding="4dp"
         android:textColor="@color/colorPrimaryText"
         tools:text="1. Example step" />
 </RelativeLayout>
