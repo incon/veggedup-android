@@ -17,7 +17,6 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -27,6 +26,7 @@ import android.widget.TextView;
 import com.bumptech.glide.request.target.AppWidgetTarget;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.veggedup.veggedup.data.VeggedupContract;
 import com.veggedup.veggedup.data.VeggedupDbHelper;
 import com.veggedup.veggedup.module.GlideApp;
@@ -45,6 +45,7 @@ public class RecipeDetailActivity extends AppCompatActivity {
     private boolean favourite;
     private FloatingActionButton fab;
     private int recipeId;
+    private FirebaseAnalytics mFirebaseAnalytics;
 
     private final static String LOG_TAG = MainActivity.class.getSimpleName();
 
@@ -57,6 +58,9 @@ public class RecipeDetailActivity extends AppCompatActivity {
         if (getResources().getBoolean(R.bool.portrait_only)) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
+
+        // Firebase Analytics
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         // Ads
         AdView mAdView = (AdView) findViewById(R.id.adView2);
@@ -85,11 +89,17 @@ public class RecipeDetailActivity extends AppCompatActivity {
                 ContentValues c = new ContentValues();
                 c.put(VeggedupContract.Recipe.COLUMN_FAVOURITE, favourite ? getDateTime() : null);
                 mDb.update(VeggedupContract.Recipe.TABLE_NAME, c, "recipeId=?", new String[]{String.valueOf(recipeId)});
+                Bundle bundle = new Bundle();
                 if (favourite) {
                     fab.setImageResource(R.drawable.favourited);
+                    bundle.putString(FirebaseAnalytics.Param.ITEM_ID, String.valueOf(recipeId));
+                    bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "favorited_recipe");
                 } else {
                     fab.setImageResource(R.drawable.unfavourited);
+                    bundle.putString(FirebaseAnalytics.Param.ITEM_ID, String.valueOf(recipeId));
+                    bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "unfavorited_recipe");
                 }
+                mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
                 updateLastFavouriteWidget();
             }
         });
