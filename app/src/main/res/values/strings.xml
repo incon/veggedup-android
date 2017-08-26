@@ -3,6 +3,13 @@
     <string name="default_recipe_title">[Recipe Title]</string>
     <string name="title_activity_recipe_detail">Recipe Detail</string>
 
+    <string name="serves">serves</string>
+    <string name="duration">duration</string>
+    <string name="ingredients_count">Ingredients Count</string>
+    <string name="steps_count">Steps Count</string>
+    <string name="favourited">favourited</string>
+    <string name="unfavourtied">unfavorited</string>
+
     <string name="ingredients">Ingredients</string>
     <string name="steps">Steps</string>
     <string name="no_data_available">Please check you internet connect and swipe to refresh to try again.</string>
@@ -13,4 +20,5 @@
     <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
     <string name="no_favourites_widget">You don\'t have any favorites</string>
     <string name="add_widget">Add widget</string>
+
 </resources>

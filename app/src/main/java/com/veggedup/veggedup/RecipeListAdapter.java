@@ -77,8 +77,10 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Re
 
         if (favourite) {
             holder.favouriteImageView.setImageResource(R.drawable.favourited);
+            holder.favouriteImageView.setContentDescription(holder.favouriteImageView.getResources().getString(R.string.favourited));
         } else {
             holder.favouriteImageView.setImageResource(R.drawable.unfavourited);
+            holder.favouriteImageView.setContentDescription(holder.favouriteImageView.getResources().getString(R.string.unfavourtied));
         }
 
         // Display image

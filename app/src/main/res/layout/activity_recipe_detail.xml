@@ -92,6 +92,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
+                        android:contentDescription="@string/duration"
                         app:srcCompat="@drawable/time" />
 
                     <TextView
@@ -117,6 +118,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
+                        android:contentDescription="@string/ingredients_count"
                         app:srcCompat="@drawable/ingredients" />
 
                     <TextView
@@ -142,6 +144,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
+                        android:contentDescription="@string/steps_count"
                         app:srcCompat="@drawable/steps" />
 
                     <TextView
@@ -167,6 +170,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
+                        android:contentDescription="@string/serves"
                         app:srcCompat="@drawable/serves" />
 
                     <TextView
