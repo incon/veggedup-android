@@ -3,12 +3,15 @@ package com.veggedup.veggedup;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.widget.RemoteViews;
 
 import com.bumptech.glide.request.target.AppWidgetTarget;
+import com.veggedup.veggedup.data.VeggedupContract;
 import com.veggedup.veggedup.data.VeggedupDbHelper;
 import com.veggedup.veggedup.module.GlideApp;
 
@@ -17,41 +20,56 @@ import com.veggedup.veggedup.module.GlideApp;
  */
 public class LastFavouriteWidget extends AppWidgetProvider {
 
-    private AppWidgetTarget appWidgetTarget;
-
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId) {
 
-        CharSequence widgetText = "Last recipe";
         // Construct the RemoteViews object
-        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.last_favourite_widget);
-        views.setTextViewText(R.id.appwidget_text, widgetText);
+        RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.last_favourite_widget);
 
         // Create a DB helper (this will create the DB if run for the first time)
         VeggedupDbHelper dbHelper = new VeggedupDbHelper(context);
-        AppWidgetTarget appWidgetTarget = new AppWidgetTarget(context, R.id.last_favourite_image_view, views, appWidgetId);
-
-        // Display image
-        GlideApp.with(context)
-                .asBitmap()
-                .load("https://veggedup.com/img/test1.png")
-                .error(R.drawable.placeholder)
-                .into(appWidgetTarget);
+        AppWidgetTarget appWidgetTarget = new AppWidgetTarget(context, R.id.last_favourite_image_view, remoteViews, appWidgetId);
 
         // Keep a reference to the mDb until paused or killed. Get a writable database
         // because you will be adding restaurant customers
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
         // Get last favourite
+        Cursor lastFavourite = db.query(
+                VeggedupContract.Recipe.TABLE_NAME,
+                null,
+                VeggedupContract.Recipe.COLUMN_FAVOURITE + " IS NOT NULL",
+                null,
+                null,
+                null,
+                VeggedupContract.Recipe.COLUMN_FAVOURITE + " DESC"
+        );
 
-        // Click handler
-        Intent configIntent = new Intent(context, RecipeDetailActivity.class);
-        configIntent.putExtra("RECIPE_ID", 2);
-        PendingIntent configPendingIntent = PendingIntent.getActivity(context, 0, configIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        views.setOnClickPendingIntent(R.id.appwidget, configPendingIntent);
+        if (lastFavourite.getCount() > 0) {
+            lastFavourite.moveToFirst();
+
+            remoteViews.setTextViewText(R.id.last_favourite_title, lastFavourite.getString(lastFavourite.getColumnIndex(VeggedupContract.Recipe.COLUMN_TITLE)));
+
+            // Display image
+            GlideApp.with(context)
+                    .asBitmap()
+                    .load(lastFavourite.getString(lastFavourite.getColumnIndex(VeggedupContract.Recipe.COLUMN_IMAGE)))
+                    .error(R.drawable.placeholder)
+                    .into(appWidgetTarget);
+            // Click handler
+            Intent configIntent = new Intent(context, RecipeDetailActivity.class);
+            configIntent.putExtra("RECIPE_ID", lastFavourite.getInt(lastFavourite.getColumnIndex(VeggedupContract.Recipe.COLUMN_RECIPE_ID)));
+            PendingIntent configPendingIntent = PendingIntent.getActivity(context, 0, configIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            remoteViews.setOnClickPendingIntent(R.id.appwidget, configPendingIntent);
+        } else {
+            remoteViews.setTextViewText(R.id.last_favourite_title, context.getResources().getText(R.string.no_favourites_widget));
+            Intent configIntent = new Intent(context, MainActivity.class);
+            PendingIntent configPendingIntent = PendingIntent.getActivity(context, 0, configIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            remoteViews.setOnClickPendingIntent(R.id.appwidget, configPendingIntent);
+        }
 
         // Instruct the widget manager to update the widget
-        appWidgetManager.updateAppWidget(appWidgetId, views);
+        appWidgetManager.updateAppWidget(appWidgetId, remoteViews);
     }
 
     @Override
@@ -71,5 +89,6 @@ public class LastFavouriteWidget extends AppWidgetProvider {
     public void onDisabled(Context context) {
         // Enter relevant functionality for when the last widget is disabled
     }
+
 }
 

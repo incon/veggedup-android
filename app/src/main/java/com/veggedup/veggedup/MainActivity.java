@@ -301,7 +301,7 @@ public class MainActivity extends AppCompatActivity implements RecipeListAdapter
         return mDb.query(
                 VeggedupContract.Recipe.TABLE_NAME,
                 null,
-                VeggedupContract.Recipe.COLUMN_FAVOURITE + "=" + 1,
+                VeggedupContract.Recipe.COLUMN_FAVOURITE + " IS NOT NULL",
                 null,
                 null,
                 null,

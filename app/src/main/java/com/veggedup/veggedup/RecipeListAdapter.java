@@ -62,7 +62,7 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Re
         String ingredientsCount = String.valueOf(mCursor.getInt(mCursor.getColumnIndex(VeggedupContract.Recipe.COLUMN_INGREDIENTS_COUNT)));
         String stepsCount = String.valueOf(mCursor.getInt(mCursor.getColumnIndex(VeggedupContract.Recipe.COLUMN_STEPS_COUNT)));
         String serves = String.valueOf(mCursor.getInt(mCursor.getColumnIndex(VeggedupContract.Recipe.COLUMN_SERVERS)));
-        Boolean favourite = mCursor.getInt(mCursor.getColumnIndex(VeggedupContract.Recipe.COLUMN_FAVOURITE)) == 1;
+        Boolean favourite = mCursor.getString(mCursor.getColumnIndex(VeggedupContract.Recipe.COLUMN_FAVOURITE)) != null;
 
         // Retrieve the id from the cursor and
         long id = mCursor.getLong(mCursor.getColumnIndex(VeggedupContract.Recipe._ID));

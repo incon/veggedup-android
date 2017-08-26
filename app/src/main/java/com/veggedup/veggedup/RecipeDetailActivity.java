@@ -1,5 +1,8 @@
 package com.veggedup.veggedup;
 
+import android.app.PendingIntent;
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -14,19 +17,26 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RemoteViews;
 import android.widget.TextView;
 
+import com.bumptech.glide.request.target.AppWidgetTarget;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.veggedup.veggedup.data.VeggedupContract;
 import com.veggedup.veggedup.data.VeggedupDbHelper;
 import com.veggedup.veggedup.module.GlideApp;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 
 public class RecipeDetailActivity extends AppCompatActivity {
 
@@ -35,6 +45,8 @@ public class RecipeDetailActivity extends AppCompatActivity {
     private boolean favourite;
     private FloatingActionButton fab;
     private int recipeId;
+
+    private final static String LOG_TAG = MainActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,13 +83,14 @@ public class RecipeDetailActivity extends AppCompatActivity {
             public void onClick(View view) {
                 favourite = !favourite;
                 ContentValues c = new ContentValues();
-                c.put(VeggedupContract.Recipe.COLUMN_FAVOURITE, favourite ? 1 : 0);
+                c.put(VeggedupContract.Recipe.COLUMN_FAVOURITE, favourite ? getDateTime() : null);
                 mDb.update(VeggedupContract.Recipe.TABLE_NAME, c, "recipeId=?", new String[]{String.valueOf(recipeId)});
                 if (favourite) {
                     fab.setImageResource(R.drawable.favourited);
                 } else {
                     fab.setImageResource(R.drawable.unfavourited);
                 }
+                updateLastFavouriteWidget();
             }
         });
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -102,7 +115,7 @@ public class RecipeDetailActivity extends AppCompatActivity {
         String stepsCount = String.valueOf(recipe.getInt(recipe.getColumnIndex(VeggedupContract.Recipe.COLUMN_STEPS_COUNT)));
         String serves = String.valueOf(recipe.getInt(recipe.getColumnIndex(VeggedupContract.Recipe.COLUMN_SERVERS)));
         String recipeImageURL = recipe.getString(recipe.getColumnIndex(VeggedupContract.Recipe.COLUMN_IMAGE));
-        favourite = recipe.getInt(recipe.getColumnIndex(VeggedupContract.Recipe.COLUMN_FAVOURITE)) == 1;
+        favourite = recipe.getString(recipe.getColumnIndex(VeggedupContract.Recipe.COLUMN_FAVOURITE)) != null;
 
         // Get Elements
         TextView detailRecipeTitle = (TextView) findViewById(R.id.detailRecipeTitle);
@@ -145,6 +158,25 @@ public class RecipeDetailActivity extends AppCompatActivity {
                 null,
                 VeggedupContract.Recipe.COLUMN_RECIPE_ID
         );
+    }
+
+    private Cursor getLastFavourite() {
+        return mDb.query(
+                VeggedupContract.Recipe.TABLE_NAME,
+                null,
+                VeggedupContract.Recipe.COLUMN_FAVOURITE + " IS NOT NULL",
+                null,
+                null,
+                null,
+                VeggedupContract.Recipe.COLUMN_FAVOURITE + " DESC"
+        );
+    }
+
+    private String getDateTime() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        Date date = new Date();
+        return dateFormat.format(date);
     }
 
     private class ViewPagerAdapter extends FragmentPagerAdapter {
@@ -200,6 +232,37 @@ public class RecipeDetailActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void updateLastFavouriteWidget() {
+        Cursor lastFavourite = getLastFavourite();
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(getBaseContext());
+        RemoteViews remoteViews = new RemoteViews(getBaseContext().getPackageName(), R.layout.last_favourite_widget);
+        ComponentName lastFavouriteWidget = new ComponentName(getBaseContext(), LastFavouriteWidget.class);
+        int[] appWidgetIds = appWidgetManager.getAppWidgetIds(lastFavouriteWidget);
+
+        if (lastFavourite.getCount() > 0 && appWidgetIds.length > 0) {
+            lastFavourite.moveToFirst();
+            AppWidgetTarget appWidgetTarget = new AppWidgetTarget(getBaseContext(), R.id.last_favourite_image_view, remoteViews, appWidgetIds);
+            GlideApp.with(getBaseContext())
+                    .asBitmap()
+                    .load(lastFavourite.getString(lastFavourite.getColumnIndex(VeggedupContract.Recipe.COLUMN_IMAGE)))
+                    .error(R.drawable.placeholder)
+                    .into(appWidgetTarget);
+            remoteViews.setTextViewText(R.id.last_favourite_title, lastFavourite.getString(lastFavourite.getColumnIndex(VeggedupContract.Recipe.COLUMN_TITLE)));
+            Intent configIntent = new Intent(getBaseContext(), RecipeDetailActivity.class);
+            configIntent.putExtra("RECIPE_ID", lastFavourite.getInt(lastFavourite.getColumnIndex(VeggedupContract.Recipe.COLUMN_RECIPE_ID)));
+            PendingIntent configPendingIntent = PendingIntent.getActivity(getBaseContext(), 0, configIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            remoteViews.setOnClickPendingIntent(R.id.appwidget, configPendingIntent);
+        } else {
+            remoteViews.setTextViewText(R.id.last_favourite_title, getResources().getText(R.string.no_favourites_widget));
+            remoteViews.setImageViewBitmap(R.id.last_favourite_image_view, null);
+            Intent configIntent = new Intent(getBaseContext(), MainActivity.class);
+            PendingIntent configPendingIntent = PendingIntent.getActivity(getBaseContext(), 0, configIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            remoteViews.setOnClickPendingIntent(R.id.appwidget, configPendingIntent);
+        }
+
+        AppWidgetManager.getInstance(getBaseContext()).updateAppWidget(lastFavouriteWidget, remoteViews);
     }
 
 }
