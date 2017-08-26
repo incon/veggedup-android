@@ -13,7 +13,7 @@ public class VeggedupDbHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "veggedup.db";
 
     // If you change the database schema, you must increment the database version
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     // Constructor
     public VeggedupDbHelper(Context context) {
