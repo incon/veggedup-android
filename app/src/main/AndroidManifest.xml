@@ -27,6 +27,16 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.veggedup.veggedup.MainActivity" />
         </activity>
+
+        <receiver android:name=".LastFavouriteWidget">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/last_favourite_widget_info" />
+        </receiver>
     </application>
 
 </manifest>
