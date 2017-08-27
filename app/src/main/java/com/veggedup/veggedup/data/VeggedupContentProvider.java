@@ -98,6 +98,32 @@ public class VeggedupContentProvider extends ContentProvider {
 
     @Override
     public int update(@NonNull Uri uri, @Nullable ContentValues contentValues, @Nullable String s, @Nullable String[] strings) {
-        return 0;
+        // Get access to the database and write URI matching code to recognize a single item
+        final SQLiteDatabase db = mVeggedupDbHelper.getWritableDatabase();
+
+        int match = sUriMatcher.match(uri);
+        // Keep track of the number of deleted recipes
+        int recipesUpdated; // starts as 0
+
+        switch (match) {
+            // Handle the single item case, recognized by the ID included in the URI path
+            case RECIPES_WITH_RECIPE_ID:
+                // Get the task ID from the URI path
+                String id = uri.getPathSegments().get(1);
+                // Use selections/selectionArgs to filter for this ID
+                recipesUpdated = db.update(VeggedupContract.Recipe.TABLE_NAME, contentValues, "recipeId=?", new String[]{String.valueOf(id)});
+                break;
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
+
+        // Notify the resolver of a change and return the number of items deleted
+        if (recipesUpdated != 0) {
+            // A task was deleted, set notification
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+
+        // Return the number of tasks deleted
+        return recipesUpdated;
     }
 }
