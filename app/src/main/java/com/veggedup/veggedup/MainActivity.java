@@ -3,7 +3,6 @@ package com.veggedup.veggedup;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
@@ -26,7 +25,6 @@ import com.google.android.gms.ads.AdView;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.veggedup.veggedup.data.DataUtil;
 import com.veggedup.veggedup.data.VeggedupContract;
-import com.veggedup.veggedup.data.VeggedupDbHelper;
 
 
 public class MainActivity extends AppCompatActivity implements RecipeListAdapter.RecipeListAdapterOnClickHandler,
@@ -45,7 +43,6 @@ public class MainActivity extends AppCompatActivity implements RecipeListAdapter
     private boolean favouritesOnly = false;
 
     private RecipeListAdapter mAdapter;
-    private SQLiteDatabase mDb;
     private final static String LOG_TAG = MainActivity.class.getSimpleName();
 
     private static final int VEGGEDUP_SYNC_LOADER = 22;
@@ -93,13 +90,6 @@ public class MainActivity extends AppCompatActivity implements RecipeListAdapter
 
         // Set layout for the RecyclerView
         recipeRecyclerView.setLayoutManager(new GridLayoutManager(this, columns));
-
-        // Create a DB helper (this will create the DB if run for the first time)
-        VeggedupDbHelper dbHelper = new VeggedupDbHelper(this);
-
-        // Keep a reference to the mDb until paused or killed. Get a writable database
-        // because you will be adding restaurant customers
-        mDb = dbHelper.getWritableDatabase();
 
         // Create an adapter for that cursor to display the data
         mAdapter = new RecipeListAdapter(this, null, this);
@@ -156,7 +146,7 @@ public class MainActivity extends AppCompatActivity implements RecipeListAdapter
             @Override
             public Cursor loadInBackground() {
                 mLoadingIndicator.setVisibility(View.VISIBLE);
-                DataUtil.syncData(mDb);
+                DataUtil.syncData(getBaseContext());
                 return getAllRecipes();
             }
 
@@ -222,7 +212,7 @@ public class MainActivity extends AppCompatActivity implements RecipeListAdapter
 
         @Override
         protected String doInBackground(Void... params) {
-            return String.valueOf(DataUtil.syncData(mDb));
+            return String.valueOf(DataUtil.syncData(getBaseContext()));
         }
 
         @Override
@@ -301,14 +291,17 @@ public class MainActivity extends AppCompatActivity implements RecipeListAdapter
      * @return Cursor containing the list of guests
      */
     private Cursor getFavouriteRecipes() {
-        return mDb.query(
-                VeggedupContract.Recipe.TABLE_NAME,
-                null,
-                VeggedupContract.Recipe.COLUMN_FAVOURITE + " IS NOT NULL",
-                null,
-                null,
-                null,
-                VeggedupContract.Recipe.COLUMN_RECIPE_ID + " DESC"
-        );
+        try {
+            return getContentResolver().query(VeggedupContract.Recipe.CONTENT_URI,
+                    null,
+                    VeggedupContract.Recipe.COLUMN_FAVOURITE + " IS NOT NULL",
+                    null,
+                    VeggedupContract.Recipe.COLUMN_RECIPE_ID + " DESC");
+
+        } catch (Exception e) {
+            Log.e(LOG_TAG, "Failed to asynchronously load data.");
+            e.printStackTrace();
+            return null;
+        }
     }
 }
