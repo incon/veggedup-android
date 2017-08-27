@@ -37,6 +37,11 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/last_favourite_widget_info" />
         </receiver>
+
+        <provider
+            android:name="com.veggedup.veggedup.data.VeggedupContentProvider"
+            android:authorities="com.veggedup.veggedup"
+            android:exported="false" />
     </application>
 
 </manifest>

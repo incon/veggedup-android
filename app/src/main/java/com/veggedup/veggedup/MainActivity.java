@@ -281,15 +281,18 @@ public class MainActivity extends AppCompatActivity implements RecipeListAdapter
      * @return Cursor containing the list of guests
      */
     private Cursor getAllRecipes() {
-        return mDb.query(
-                VeggedupContract.Recipe.TABLE_NAME,
-                null,
-                null,
-                null,
-                null,
-                null,
-                VeggedupContract.Recipe.COLUMN_RECIPE_ID + " DESC"
-        );
+        try {
+            return getContentResolver().query(VeggedupContract.Recipe.CONTENT_URI,
+                    null,
+                    null,
+                    null,
+                    VeggedupContract.Recipe.COLUMN_RECIPE_ID + " DESC");
+
+        } catch (Exception e) {
+            Log.e(LOG_TAG, "Failed to asynchronously load data.");
+            e.printStackTrace();
+            return null;
+        }
     }
 
     /**
