@@ -1,6 +1,7 @@
 package com.veggedup.veggedup.data;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
@@ -19,7 +20,14 @@ import okhttp3.Response;
 
 public class DataUtil {
 
-    public static Boolean syncData(SQLiteDatabase db) {
+    public static Boolean syncData(Context context) {
+
+        // Create a DB helper (this will create the DB if run for the first time)
+        VeggedupDbHelper dbHelper = new VeggedupDbHelper(context);
+
+        // Keep a reference to the mDb until paused or killed. Get a writable database
+        // because you will be adding restaurant customers
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
 
         Boolean success;
 
@@ -84,7 +92,7 @@ public class DataUtil {
             for (ContentValues c : list) {
                 int id = (int) db.insertWithOnConflict(VeggedupContract.Recipe.TABLE_NAME, null, c, SQLiteDatabase.CONFLICT_IGNORE);
                 if (id == -1) {
-                    db.update(VeggedupContract.Recipe.TABLE_NAME, c, "recipeId=?", new String[] {String.valueOf(c.getAsInteger(VeggedupContract.Recipe.COLUMN_RECIPE_ID))});
+                    db.update(VeggedupContract.Recipe.TABLE_NAME, c, "recipeId=?", new String[]{String.valueOf(c.getAsInteger(VeggedupContract.Recipe.COLUMN_RECIPE_ID))});
                 }
             }
             db.setTransactionSuccessful();
