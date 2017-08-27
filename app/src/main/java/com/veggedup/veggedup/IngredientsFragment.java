@@ -24,10 +24,6 @@ import java.util.Map;
  */
 public class IngredientsFragment extends Fragment {
 
-    public IngredientsFragment() {
-        // Required empty public constructor
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
