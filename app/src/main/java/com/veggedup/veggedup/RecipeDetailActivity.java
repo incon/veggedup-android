@@ -7,7 +7,7 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
@@ -17,6 +17,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -28,7 +29,6 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.veggedup.veggedup.data.VeggedupContract;
-import com.veggedup.veggedup.data.VeggedupDbHelper;
 import com.veggedup.veggedup.module.GlideApp;
 
 import java.text.SimpleDateFormat;
@@ -40,7 +40,6 @@ import java.util.TimeZone;
 
 public class RecipeDetailActivity extends AppCompatActivity {
 
-    private SQLiteDatabase mDb;
     private Cursor recipe;
     private boolean favourite;
     private FloatingActionButton fab;
@@ -67,9 +66,6 @@ public class RecipeDetailActivity extends AppCompatActivity {
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
 
-        VeggedupDbHelper dbHelper = new VeggedupDbHelper(this);
-        mDb = dbHelper.getWritableDatabase();
-
         Intent intent = getIntent();
         if (intent.hasExtra("RECIPE_ID")) {
             recipeId = intent.getIntExtra("RECIPE_ID", 0);
@@ -88,7 +84,11 @@ public class RecipeDetailActivity extends AppCompatActivity {
                 favourite = !favourite;
                 ContentValues c = new ContentValues();
                 c.put(VeggedupContract.Recipe.COLUMN_FAVOURITE, favourite ? getDateTime() : null);
-                mDb.update(VeggedupContract.Recipe.TABLE_NAME, c, "recipeId=?", new String[]{String.valueOf(recipeId)});
+
+                String stringId = Integer.toString(recipeId);
+                Uri uri = VeggedupContract.Recipe.CONTENT_URI.buildUpon().appendPath(stringId).build();
+                getContentResolver().update(uri, c, null, null);
+
                 Bundle bundle = new Bundle();
                 if (favourite) {
                     fab.setImageResource(R.drawable.favourited);
@@ -161,27 +161,48 @@ public class RecipeDetailActivity extends AppCompatActivity {
     }
 
     private Cursor getRecipe(int recipeId) {
-        return mDb.query(
-                VeggedupContract.Recipe.TABLE_NAME,
-                null,
-                VeggedupContract.Recipe.COLUMN_RECIPE_ID + " = " + recipeId,
-                null,
-                null,
-                null,
-                VeggedupContract.Recipe.COLUMN_RECIPE_ID
-        );
+        try {
+            return getContentResolver().query(VeggedupContract.Recipe.CONTENT_URI,
+                    null,
+                    VeggedupContract.Recipe.COLUMN_RECIPE_ID + " = " + recipeId,
+                    null,
+                    VeggedupContract.Recipe.COLUMN_RECIPE_ID + " DESC");
+
+        } catch (Exception e) {
+            Log.e(LOG_TAG, "Failed to asynchronously load data.");
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private Cursor update(int recipeId) {
+        try {
+            return getContentResolver().query(VeggedupContract.Recipe.CONTENT_URI,
+                    null,
+                    VeggedupContract.Recipe.COLUMN_RECIPE_ID + " = " + recipeId,
+                    null,
+                    VeggedupContract.Recipe.COLUMN_RECIPE_ID + " DESC");
+
+        } catch (Exception e) {
+            Log.e(LOG_TAG, "Failed to asynchronously load data.");
+            e.printStackTrace();
+            return null;
+        }
     }
 
     private Cursor getLastFavourite() {
-        return mDb.query(
-                VeggedupContract.Recipe.TABLE_NAME,
-                null,
-                VeggedupContract.Recipe.COLUMN_FAVOURITE + " IS NOT NULL",
-                null,
-                null,
-                null,
-                VeggedupContract.Recipe.COLUMN_FAVOURITE + " DESC"
-        );
+        try {
+            return getContentResolver().query(VeggedupContract.Recipe.CONTENT_URI,
+                    null,
+                    VeggedupContract.Recipe.COLUMN_FAVOURITE + " IS NOT NULL",
+                    null,
+                    VeggedupContract.Recipe.COLUMN_RECIPE_ID + " DESC");
+
+        } catch (Exception e) {
+            Log.e(LOG_TAG, "Failed to asynchronously load data.");
+            e.printStackTrace();
+            return null;
+        }
     }
 
     private String getDateTime() {
