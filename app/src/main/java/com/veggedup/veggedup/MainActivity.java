@@ -264,12 +264,6 @@ public class MainActivity extends AppCompatActivity implements RecipeListAdapter
         }
     }
 
-
-    /**
-     * Query the mDb and get all guests from the waitlist table
-     *
-     * @return Cursor containing the list of guests
-     */
     private Cursor getAllRecipes() {
         try {
             return getContentResolver().query(VeggedupContract.Recipe.CONTENT_URI,
@@ -285,11 +279,6 @@ public class MainActivity extends AppCompatActivity implements RecipeListAdapter
         }
     }
 
-    /**
-     * Query the mDb and get all guests from the waitlist table
-     *
-     * @return Cursor containing the list of guests
-     */
     private Cursor getFavouriteRecipes() {
         try {
             return getContentResolver().query(VeggedupContract.Recipe.CONTENT_URI,
