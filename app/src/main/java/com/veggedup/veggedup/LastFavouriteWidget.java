@@ -25,26 +25,16 @@ public class LastFavouriteWidget extends AppWidgetProvider {
 
         // Construct the RemoteViews object
         RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.last_favourite_widget);
-
-        // Create a DB helper (this will create the DB if run for the first time)
-        VeggedupDbHelper dbHelper = new VeggedupDbHelper(context);
         AppWidgetTarget appWidgetTarget = new AppWidgetTarget(context, R.id.last_favourite_image_view, remoteViews, appWidgetId);
 
-        // Keep a reference to the mDb until paused or killed. Get a writable database
-        // because you will be adding restaurant customers
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-
         // Get last favourite
-        Cursor lastFavourite = db.query(
-                VeggedupContract.Recipe.TABLE_NAME,
+        Cursor lastFavourite = context.getContentResolver().query(VeggedupContract.Recipe.CONTENT_URI,
                 null,
                 VeggedupContract.Recipe.COLUMN_FAVOURITE + " IS NOT NULL",
                 null,
-                null,
-                null,
-                VeggedupContract.Recipe.COLUMN_FAVOURITE + " DESC"
-        );
+                VeggedupContract.Recipe.COLUMN_RECIPE_ID + " DESC");
 
+        assert lastFavourite != null;
         if (lastFavourite.getCount() > 0) {
             lastFavourite.moveToFirst();
 
@@ -67,6 +57,8 @@ public class LastFavouriteWidget extends AppWidgetProvider {
             PendingIntent configPendingIntent = PendingIntent.getActivity(context, 0, configIntent, PendingIntent.FLAG_UPDATE_CURRENT);
             remoteViews.setOnClickPendingIntent(R.id.appwidget, configPendingIntent);
         }
+
+        lastFavourite.close();
 
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, remoteViews);
