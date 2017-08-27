@@ -92,10 +92,12 @@ public class RecipeDetailActivity extends AppCompatActivity {
                 Bundle bundle = new Bundle();
                 if (favourite) {
                     fab.setImageResource(R.drawable.favourited);
+                    fab.setContentDescription(getResources().getString(R.string.favourited));
                     bundle.putString(FirebaseAnalytics.Param.ITEM_ID, String.valueOf(recipeId));
                     bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "favorited_recipe");
                 } else {
                     fab.setImageResource(R.drawable.unfavourited);
+                    fab.setContentDescription(getResources().getString(R.string.unfavourtied));
                     bundle.putString(FirebaseAnalytics.Param.ITEM_ID, String.valueOf(recipeId));
                     bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "unfavorited_recipe");
                 }
