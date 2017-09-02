@@ -250,23 +250,6 @@ public class RecipeDetailActivity extends AppCompatActivity {
         return recipe.getString(recipe.getColumnIndex(VeggedupContract.Recipe.COLUMN_INGREDIENTS));
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        switch (id) {
-            case android.R.id.home:
-                Intent intent = new Intent(this, MainActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                Bundle bundle = new Bundle();
-                bundle.putBoolean("REFRESH_CURSOR", true);
-                intent.putExtras(bundle);
-                startActivity(intent);
-                return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
     public void updateLastFavouriteWidget() {
         Cursor lastFavourite = getLastFavourite();
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(getBaseContext());

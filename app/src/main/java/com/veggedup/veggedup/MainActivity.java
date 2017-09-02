@@ -97,17 +97,15 @@ public class MainActivity extends AppCompatActivity implements RecipeListAdapter
         // Link the adapter to the RecyclerView
         recipeRecyclerView.setAdapter(mAdapter);
 
-        /*
-         * Initialize the loader on first load
-         */
-        Intent intent = getIntent();
-        if (intent.hasExtra("REFRESH_CURSOR")) {
-            mAdapter.swapCursor(getAllRecipes());
-        } else {
-            mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator);
-            getSupportLoaderManager().initLoader(VEGGEDUP_SYNC_LOADER, null, this);
-        }
+        mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator);
+        getSupportLoaderManager().initLoader(VEGGEDUP_SYNC_LOADER, null, this);
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mAdapter.swapCursor(getAllRecipes());
     }
 
     @Override
