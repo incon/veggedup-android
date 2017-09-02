@@ -97,8 +97,14 @@ public class MainActivity extends AppCompatActivity implements RecipeListAdapter
         // Link the adapter to the RecyclerView
         recipeRecyclerView.setAdapter(mAdapter);
 
-        mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator);
-        getSupportLoaderManager().initLoader(VEGGEDUP_SYNC_LOADER, null, this);
+        /*
+         * Initialize the loader on first load
+         */
+        Intent intent = getIntent();
+        if (!intent.hasExtra("DO_NOT_RELOAD")) {
+            mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator);
+            getSupportLoaderManager().initLoader(VEGGEDUP_SYNC_LOADER, null, this);
+        }
 
     }
 
