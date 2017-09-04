@@ -284,13 +284,13 @@ public class RecipeDetailActivity extends AppCompatActivity {
             remoteViews.setTextViewText(R.id.last_favourite_title, lastFavourite.getString(lastFavourite.getColumnIndex(VeggedupContract.Recipe.COLUMN_TITLE)));
             Intent configIntent = new Intent(getBaseContext(), RecipeDetailActivity.class);
             configIntent.putExtra("RECIPE_ID", lastFavourite.getInt(lastFavourite.getColumnIndex(VeggedupContract.Recipe.COLUMN_RECIPE_ID)));
-            PendingIntent configPendingIntent = PendingIntent.getActivity(getBaseContext(), 0, configIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            PendingIntent configPendingIntent = PendingIntent.getActivity(getBaseContext(), 0, configIntent, PendingIntent.FLAG_CANCEL_CURRENT);
             remoteViews.setOnClickPendingIntent(R.id.appwidget, configPendingIntent);
         } else {
             remoteViews.setTextViewText(R.id.last_favourite_title, getResources().getText(R.string.no_favourites_widget));
             remoteViews.setImageViewBitmap(R.id.last_favourite_image_view, null);
             Intent configIntent = new Intent(getBaseContext(), MainActivity.class);
-            PendingIntent configPendingIntent = PendingIntent.getActivity(getBaseContext(), 0, configIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            PendingIntent configPendingIntent = PendingIntent.getActivity(getBaseContext(), 0, configIntent, PendingIntent.FLAG_CANCEL_CURRENT);
             remoteViews.setOnClickPendingIntent(R.id.appwidget, configPendingIntent);
         }
 
