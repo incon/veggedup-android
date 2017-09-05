@@ -32,7 +32,7 @@ public class LastFavouriteWidget extends AppWidgetProvider {
                 null,
                 VeggedupContract.Recipe.COLUMN_FAVOURITE + " IS NOT NULL",
                 null,
-                VeggedupContract.Recipe.COLUMN_RECIPE_ID + " DESC");
+                VeggedupContract.Recipe.COLUMN_FAVOURITE + " DESC");
 
         assert lastFavourite != null;
         if (lastFavourite.getCount() > 0) {

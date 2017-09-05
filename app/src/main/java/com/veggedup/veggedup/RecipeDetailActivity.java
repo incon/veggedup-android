@@ -196,7 +196,7 @@ public class RecipeDetailActivity extends AppCompatActivity {
                     null,
                     VeggedupContract.Recipe.COLUMN_FAVOURITE + " IS NOT NULL",
                     null,
-                    VeggedupContract.Recipe.COLUMN_RECIPE_ID + " DESC");
+                    VeggedupContract.Recipe.COLUMN_FAVOURITE + " DESC");
 
         } catch (Exception e) {
             Log.e(LOG_TAG, "Failed to asynchronously load data.");
